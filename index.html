@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greece Trip 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafaf9; color: #1c1917; line-height: 1.5; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.hero { background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%); color: white; padding: 60px 40px; border-radius: 20px; margin-bottom: 40px; text-align: center; }
+.hero h1 { font-size: 3em; font-weight: 800; margin-bottom: 10px; }
+.hero p { font-size: 1.2em; opacity: 0.9; }
+.timeline { display: flex; gap: 0; margin: 30px 0; }
+.timeline-item { flex: 1; text-align: center; padding: 15px 10px; border-radius: 12px; }
+.timeline-item.milos { background: #dbeafe; }
+.timeline-item.paros { background: #fce7f3; }
+.timeline-item.mykonos { background: #e0e7ff; }
+.timeline-item.athens { background: #fef3c7; }
+.timeline-item h4 { font-size: 1.1em; margin-bottom: 2px; }
+.timeline-item p { font-size: 0.85em; opacity: 0.7; }
+.timeline-arrow { display: flex; align-items: center; font-size: 1.5em; padding: 0 5px; color: #9ca3af; }
+.section { margin-bottom: 50px; }
+.section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
+.section-header h2 { font-size: 1.8em; font-weight: 700; }
+.section-header .icon { font-size: 2em; }
+.flight-group { margin-bottom: 25px; }
+.flight-group h3 { font-size: 1.1em; margin-bottom: 10px; color: #4b5563; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.9em; }
+th { background: #f3f4f6; padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
+tr:hover td { background: #f9fafb; }
+.price-cell { font-weight: 700; color: #059669; }
+a { color: #2563eb; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.listing-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
+.listing-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.listing-photo { height: 200px; overflow: hidden; background: #e5e7eb; }
+.listing-photo img { width: 100%; height: 100%; object-fit: cover; }
+.no-photo { height: 100%; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 0.9em; }
+.listing-info { padding: 16px; }
+.listing-info h4 { font-size: 1em; margin-bottom: 4px; }
+.listing-info h4 a { color: #1c1917; }
+.listing-details { font-size: 0.85em; color: #6b7280; margin-bottom: 8px; }
+.listing-prices { background: #f9fafb; margin: -16px; margin-top: 12px; padding: 12px 16px; }
+.price-main { font-size: 1.15em; font-weight: 700; color: #059669; }
+.price-label { font-size: 0.75em; font-weight: 400; color: #9ca3af; }
+.price-sub { font-size: 0.85em; color: #6b7280; margin-top: 2px; }
+.tier-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; color: white; font-size: 0.7em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.guest-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; background: #f3f4f6; color: #374151; font-size: 0.7em; font-weight: 600; }
+.hotel-card { background: white; border: 2px solid #e0e7ff; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+.hotel-photo { height: 220px; overflow: hidden; }
+.hotel-photo img { width: 100%; height: 100%; object-fit: cover; }
+.hotel-body { padding: 24px; }
+.hotel-card h4 { font-size: 1.2em; margin-bottom: 4px; }
+.hotel-card .location { color: #6b7280; font-size: 0.9em; margin-bottom: 12px; }
+.hotel-rooms { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.hotel-room { background: #f9fafb; padding: 12px; border-radius: 8px; }
+.hotel-room .room-name { font-weight: 600; font-size: 0.9em; }
+.hotel-room .room-price { color: #059669; font-weight: 700; }
+.hotel-total { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 2px solid #e5e7eb; }
+.hotel-total .total-price { font-size: 1.3em; font-weight: 800; color: #1e40af; }
+.hotel-total .per-person { color: #6b7280; }
+.island-map { width: 100%; height: 300px; border-radius: 12px; margin-bottom: 20px; z-index: 1; }
+.cost-table { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 30px; }
+.cost-table table { margin: 0; }
+.cost-table th { background: #1e40af; color: white; padding: 14px 16px; }
+.cost-table td { padding: 12px 16px; }
+.cost-table .total-row td { background: #f0fdf4; font-weight: 700; font-size: 1.1em; border-top: 2px solid #059669; }
+.highlight { background: #fef3c7 !important; }
+.search-link { display: inline-block; margin-bottom: 15px; padding: 8px 16px; background: #f3f4f6; border-radius: 8px; font-size: 0.85em; }
+.findings { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #86efac; border-radius: 16px; padding: 24px; margin-top: 20px; }
+.findings h3 { color: #059669; margin-bottom: 12px; }
+.findings li { margin-bottom: 8px; }
+@media print {
+    .hero { background: #1e40af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .listing-card, .section { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+    <h1>Greece 2026</h1>
+    <p>Milos &middot; Paros &middot; Mykonos &middot; Athens</p>
+    <p style="margin-top:8px; opacity:0.7">NYC + LA crew &middot; 5 people &middot; Scorpios Jul 19</p>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Two Options</h2></div>
+    <h3 style="margin-bottom:10px">Option A: 7-Day Trip (Jul 14-21)</h3>
+    <div class="timeline">
+        <div class="timeline-item milos"><h4>Milos</h4><p>Jul 14-17 &middot; 3 nights</p></div>
+        <span class="timeline-arrow">&rarr;</span>
+        <div class="timeline-item mykonos"><h4>Mykonos</h4><p>Jul 17-20 &middot; 3 nights</p></div>
+        <span class="timeline-arrow">&rarr;</span>
+        <div class="timeline-item athens"><h4>Athens</h4><p>Jul 20-21 &middot; 1 night</p></div>
+    </div>
+    <h3 style="margin:20px 0 10px">Option B: 10-Day Trip (Jul 11-21)</h3>
+    <div class="timeline">
+        <div class="timeline-item milos"><h4>Milos</h4><p>Jul 11-14 &middot; 3 nights</p></div>
+        <span class="timeline-arrow">&rarr;</span>
+        <div class="timeline-item paros"><h4>Paros</h4><p>Jul 14-17 &middot; 3 nights</p></div>
+        <span class="timeline-arrow">&rarr;</span>
+        <div class="timeline-item mykonos"><h4>Mykonos</h4><p>Jul 17-20 &middot; 3 nights</p></div>
+        <span class="timeline-arrow">&rarr;</span>
+        <div class="timeline-item athens"><h4>Athens</h4><p>Jul 20-21 &middot; 1 night</p></div>
+    </div>
+    <p style="margin-top:15px; color:#6b7280; font-size:0.9em">Must be in Mykonos by Jul 19 for Scorpios. Both trips fly home Jul 21.</p>
+</div>
+
+<!-- FLIGHTS -->
+<div class="section">
+    <div class="section-header"><h2>Flights</h2></div>
+    <div class="flight-group">
+        <h3>Option A: Jul 14-21 (7-day)</h3>
+        <table>
+            <tr><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
+            <tr><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 45m</td><td class="price-cell">$1,031</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
+            <tr><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,072</td><td></td></tr>
+            <tr><td>NYC (JFK)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $876</td><td></td></tr>
+            <tr style="border-top:2px solid #e5e7eb"><td>LA (LAX)</td><td>United</td><td>1 stop (EWR)</td><td>16h 10m</td><td class="price-cell">$1,123</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
+            <tr><td>LA (LAX)</td><td>Air France</td><td>1 stop (CDG)</td><td>16h 25m</td><td class="price-cell">$1,125</td><td></td></tr>
+            <tr><td>LA (LAX)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $1,103</td><td></td></tr>
+        </table>
+    </div>
+    <div class="flight-group">
+        <h3>Option B: Jul 11-21 (10-day)</h3>
+        <table>
+            <tr><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
+            <tr><td>NYC (JFK)</td><td>Air Serbia</td><td>1 stop (BEG)</td><td>12h 20m</td><td class="price-cell">$989</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
+            <tr><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,142</td><td></td></tr>
+            <tr><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 40m</td><td class="price-cell">$1,501</td><td></td></tr>
+            <tr><td>NYC (JFK)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $911</td><td></td></tr>
+            <tr style="border-top:2px solid #e5e7eb"><td>LA (LAX)</td><td>Delta</td><td>1 stop (ATL)</td><td>17h 20m</td><td class="price-cell">$1,196</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
+            <tr><td>LA (LAX)</td><td>Air Canada</td><td>1 stop (YYZ)</td><td>15h 45m</td><td class="price-cell">$1,199</td><td></td></tr>
+            <tr><td>LA (LAX)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $1,126</td><td></td></tr>
+        </table>
+    </div>
+    <p style="color:#9ca3af; font-size:0.8em">Prices scraped from Google Flights on Apr 1, 2026.</p>
+</div>
+
+<!-- FERRIES -->
+<div class="section">
+    <div class="section-header"><h2>Ferries</h2></div>
+    <table>
+        <tr><th>Leg</th><th>Operator</th><th>Duration</th><th>Price/person</th><th>Notes</th></tr>
+        <tr><td>Athens &rarr; Milos</td><td>SeaJets</td><td>2.5-3.5h</td><td class="price-cell">$52-97</td><td>High-speed from Piraeus</td></tr>
+        <tr><td>Milos &rarr; Paros</td><td>SeaJets</td><td>1h 45m</td><td class="price-cell">$13-88</td><td>Option B only</td></tr>
+        <tr><td>Paros &rarr; Mykonos</td><td>SeaJets / Golden Star</td><td>35 min</td><td class="price-cell">$40-66</td><td>Option B only</td></tr>
+        <tr><td>Milos &rarr; Mykonos</td><td>SeaJets</td><td>3-4h</td><td class="price-cell">$50-120</td><td>Option A only</td></tr>
+        <tr><td>Mykonos &rarr; Athens</td><td>SeaJets</td><td>2.5h</td><td class="price-cell">$42-97</td><td>To Rafina port</td></tr>
+    </table>
+    <p style="margin-top:10px; color:#6b7280; font-size:0.85em">Book on <a href="https://www.ferryhopper.com" target="_blank">ferryhopper.com</a>. Meltemi winds can cancel high-speed ferries in July.</p>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Milos</h2></div>
+    <p style="margin-bottom:5px"><strong>Jul 11-14 (Option B) / Jul 14-17 (Option A)</strong></p>
+    <p style="margin-bottom:15px; color:#6b7280">Volcanic beaches, Kleftiko boat tours, Sarakiniko moonscape</p>
+    
+    <div id="map_island0" class="island-map"></div>
+    <script>
+        var map_island0 = L.map('map_island0').setView([36.72, 24.44], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png', {
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+        }).addTo(map_island0);
+        var markers_island0 = [];
+        
+        markers_island0.push(L.marker([36.787800000000004, 24.5716], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$473</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Kimolos</b><br>$473'));
+
+        markers_island0.push(L.marker([36.7269, 24.4295], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$643</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Milos</b><br>$643'));
+
+        markers_island0.push(L.marker([36.747800000000005, 24.4493], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,001</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Kamares</b><br>$1,001'));
+
+        markers_island0.push(L.marker([36.7158, 24.4516], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,041</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Adamas</b><br>$1,041'));
+
+        markers_island0.push(L.marker([36.7325, 24.411], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,114</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Ano Petali</b><br>$1,114'));
+
+        markers_island0.push(L.marker([36.6953, 24.4162], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,121</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Trypiti</b><br>$1,121'));
+
+        markers_island0.push(L.marker([36.7254, 24.4432], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,148</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Adamas</b><br>$1,148'));
+
+        markers_island0.push(L.marker([36.7179, 24.4331], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,161</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Greece</b><br>$1,161'));
+
+        markers_island0.push(L.marker([37.9804, 23.7189], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,262</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Plaka</b><br>$1,262'));
+
+        markers_island0.push(L.marker([36.7191, 24.4498], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,335</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Apartment in Adamas</b><br>$1,335'));
+
+        markers_island0.push(L.marker([36.7269, 24.4295], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,382</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Milos</b><br>$1,382'));
+
+        markers_island0.push(L.marker([36.7074, 24.44], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,531</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Milos</b><br>$1,531'));
+
+        markers_island0.push(L.marker([36.7254, 24.4432], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,581</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Adamas</b><br>$1,581'));
+
+        markers_island0.push(L.marker([36.7191, 24.4498], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,771</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Apartment in Adamas</b><br>$1,771'));
+
+        markers_island0.push(L.marker([36.7191, 24.4498], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,973</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Apartment in Adamas</b><br>$1,973'));
+
+        markers_island0.push(L.marker([36.6926, 24.3886], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,122</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in skinopi</b><br>$2,122'));
+
+        markers_island0.push(L.marker([36.7207, 24.4133], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,268</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Klima</b><br>$2,268'));
+
+        markers_island0.push(L.marker([36.7269, 24.4295], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,418</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Milos</b><br>$2,418'));
+
+        markers_island0.push(L.marker([36.7269, 24.4295], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,802</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Milos</b><br>$2,802'));
+
+        markers_island0.push(L.marker([36.6986, 24.4556], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$3,288</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Villa in Pachaina</b><br>$3,288'));
+
+        markers_island0.push(L.marker([36.7254, 24.4432], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$3,566</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Adamas</b><br>$3,566'));
+
+        markers_island0.push(L.marker([36.7158, 24.4516], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$5,036</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Home in Adamas</b><br>$5,036'));
+
+        markers_island0.push(L.marker([36.746900000000004, 24.426399999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$5,501</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Cycladic home in Mandrakia</b><br>$5,501'));
+
+        markers_island0.push(L.marker([36.7263, 24.4343], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$7,364</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Villa in Milos</b><br>$7,364'));
+
+        if (markers_island0.length > 0) {
+            var bounds_island0 = L.latLngBounds([[36.787800000000004, 24.5716], [36.7269, 24.4295], [36.747800000000005, 24.4493], [36.7158, 24.4516], [36.7325, 24.411], [36.6953, 24.4162], [36.7254, 24.4432], [36.7179, 24.4331], [37.9804, 23.7189], [36.7191, 24.4498], [36.7269, 24.4295], [36.7074, 24.44], [36.7254, 24.4432], [36.7191, 24.4498], [36.7191, 24.4498], [36.6926, 24.3886], [36.7207, 24.4133], [36.7269, 24.4295], [36.7269, 24.4295], [36.6986, 24.4556], [36.7254, 24.4432], [36.7158, 24.4516], [36.746900000000004, 24.426399999999997], [36.7263, 24.4343]]);
+            map_island0.fitBounds(bounds_island0.pad(0.15));
+        }
+    </script>
+    <a class="search-link" href="https://www.airbnb.com/s/Milos%2C%20Greece/homes?query=Milos%2C%20Greece&amp;checkin=2026-07-11&amp;checkout=2026-07-14&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <div class="listings-grid">
+        
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" alt="Home in Kimolos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/3474759" target="_blank">Home in Kimolos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms &middot; 4.98 (82)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$473 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$157/night &middot; <strong>$31/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/44581868" target="_blank">Cycladic home in Milos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.94 (134)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$643 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$214/night &middot; <strong>$42/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" alt="Home in Kamares" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/33917419" target="_blank">Home in Kamares</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 2 baths &middot; 4.97 (70)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,001 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$333/night &middot; <strong>$66/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/39770387" target="_blank">Home in Adamas</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.96 (113)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,041 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$347/night &middot; <strong>$69/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" alt="Cycladic home in Ano Petali" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/18505023" target="_blank">Cycladic home in Ano Petali</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.95 (91)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,114 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$371/night &middot; <strong>$74/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" alt="Home in Trypiti" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/7228810" target="_blank">Home in Trypiti</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.96 (52)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,121 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$373/night &middot; <strong>$74/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/16107041" target="_blank">Cycladic home in Adamas</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms &middot; 4.85 (52)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,148 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$382/night &middot; <strong>$76/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" alt="Cycladic home in Greece" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/619554585499505617" target="_blank">Cycladic home in Greece</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.92 (65)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,161 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$387/night &middot; <strong>$77/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" alt="Home in Plaka" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1358786536755863937" target="_blank">Home in Plaka</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.89 (9)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,262 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$420/night &middot; <strong>$84/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/27426118" target="_blank">Apartment in Adamas</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.94 (173)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,335 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$445/night &middot; <strong>$89/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/54109304" target="_blank">Cycladic home in Milos</a></h4>
+                <p class="listing-details">8 guests · 1 bedroom · 7 beds · 1 bath &middot; 4.9 (70)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,382 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$460/night &middot; <strong>$92/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" alt="Home in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/842519640722864877" target="_blank">Home in Milos</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 5.0 (16)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,531 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$510/night &middot; <strong>$102/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/2208534" target="_blank">Cycladic home in Adamas</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 5 beds · 1 bath &middot; 4.98 (58)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,581 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$527/night &middot; <strong>$105/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1157088631827872475" target="_blank">Apartment in Adamas</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.92 (37)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,771 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$590/night &middot; <strong>$118/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/951147339673881883" target="_blank">Apartment in Adamas</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms &middot; 5.0 (24)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,973 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$657/night &middot; <strong>$131/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" alt="Cycladic home in skinopi" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/30309428" target="_blank">Cycladic home in skinopi</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.91 (77)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,122 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$707/night &middot; <strong>$141/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" alt="Cycladic home in Klima" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/9058587" target="_blank">Cycladic home in Klima</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms &middot; 4.92 (145)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,268 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$756/night &middot; <strong>$151/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/20693576" target="_blank">Cycladic home in Milos</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.92 (73)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,418 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$806/night &middot; <strong>$161/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/7425700" target="_blank">Cycladic home in Milos</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 3 baths &middot; 5.0 (90)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,802 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$934/night &middot; <strong>$186/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" alt="Villa in Pachaina" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/24157350" target="_blank">Villa in Pachaina</a></h4>
+                <p class="listing-details">5 guests · 3 bedrooms &middot; 5.0 (69)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$3,288 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,096/night &middot; <strong>$219/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1142647114111445826" target="_blank">Cycladic home in Adamas</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 5.0 (24)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$3,566 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,188/night &middot; <strong>$237/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 9</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/32249613" target="_blank">Home in Adamas</a></h4>
+                <p class="listing-details">9 guests · 3 bedrooms · 5 beds · 3 baths &middot; 4.89 (104)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$5,036 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,678/night &middot; <strong>$335/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" alt="Cycladic home in Mandrakia" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/39911683" target="_blank">Cycladic home in Mandrakia</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.75 (12)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$5,501 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,833/night &middot; <strong>$366/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" alt="Villa in Milos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 10</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1116806982677932689" target="_blank">Villa in Milos</a></h4>
+                <p class="listing-details">10 guests · 4 bedrooms · 9 beds · 5 baths &middot; 5.0 (17)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$7,364 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$2,454/night &middot; <strong>$490/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Paros</h2></div>
+    <p style="margin-bottom:5px"><strong>Jul 14-17 (Option B only)</strong></p>
+    <p style="margin-bottom:15px; color:#6b7280">Naoussa harbor, Kolymbithres Beach, day trip to Antiparos</p>
+    
+    <div id="map_island1" class="island-map"></div>
+    <script>
+        var map_island1 = L.map('map_island1').setView([37.09, 25.18], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png', {
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+        }).addTo(map_island1);
+        var markers_island1 = [];
+        
+        markers_island1.push(L.marker([37.0766, 25.162], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$527</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Paros</b><br>$527'));
+
+        markers_island1.push(L.marker([37.0766, 25.162], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$626</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Paros</b><br>$626'));
+
+        markers_island1.push(L.marker([37.0874, 25.1552], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$785</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Home in Paralia Parikia</b><br>$785'));
+
+        markers_island1.push(L.marker([37.089800000000004, 25.1374], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$921</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Home in Paros</b><br>$921'));
+
+        markers_island1.push(L.marker([37.0841, 25.149099999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,121</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Paros</b><br>$1,121'));
+
+        markers_island1.push(L.marker([37.1089, 25.2347], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,201</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Naousa</b><br>$1,201'));
+
+        markers_island1.push(L.marker([37.0766, 25.162], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,249</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Paros</b><br>$1,249'));
+
+        markers_island1.push(L.marker([37.089800000000004, 25.1374], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,401</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Home in Paros</b><br>$1,401'));
+
+        markers_island1.push(L.marker([37.1089, 25.2347], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,407</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Naousa</b><br>$1,407'));
+
+        markers_island1.push(L.marker([37.067699999999995, 25.1873], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,494</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Krotiri</b><br>$1,494'));
+
+        markers_island1.push(L.marker([37.113099999999996, 25.2482], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,778</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Naousa</b><br>$1,778'));
+
+        markers_island1.push(L.marker([37.113099999999996, 25.2482], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,091</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Naousa</b><br>$2,091'));
+
+        markers_island1.push(L.marker([37.0841, 25.149099999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,148</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Paros</b><br>$2,148'));
+
+        markers_island1.push(L.marker([37.0925, 25.151799999999998], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,215</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Villa in Paros</b><br>$2,215'));
+
+        markers_island1.push(L.marker([37.1089, 25.2347], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,322</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Naousa</b><br>$2,322'));
+
+        markers_island1.push(L.marker([37.132, 25.2215], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,338</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Home in Naousa</b><br>$2,338'));
+
+        markers_island1.push(L.marker([37.1089, 25.2347], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,442</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Naousa</b><br>$2,442'));
+
+        markers_island1.push(L.marker([37.113099999999996, 25.2482], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,507</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Naousa</b><br>$2,507'));
+
+        markers_island1.push(L.marker([37.0841, 25.149099999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,663</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Paros</b><br>$2,663'));
+
+        markers_island1.push(L.marker([37.1089, 25.2347], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$3,299</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Cycladic home in Naousa</b><br>$3,299'));
+
+        markers_island1.push(L.marker([37.113099999999996, 25.2482], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$3,929</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Apartment in Naousa</b><br>$3,929'));
+
+        markers_island1.push(L.marker([37.1308, 25.247], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$4,572</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Villa in Naousa</b><br>$4,572'));
+
+        if (markers_island1.length > 0) {
+            var bounds_island1 = L.latLngBounds([[37.0766, 25.162], [37.0766, 25.162], [37.0874, 25.1552], [37.089800000000004, 25.1374], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.0766, 25.162], [37.089800000000004, 25.1374], [37.1089, 25.2347], [37.067699999999995, 25.1873], [37.113099999999996, 25.2482], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.0925, 25.151799999999998], [37.1089, 25.2347], [37.132, 25.2215], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.1308, 25.247]]);
+            map_island1.fitBounds(bounds_island1.pad(0.15));
+        }
+    </script>
+    <a class="search-link" href="https://www.airbnb.com/s/Paros%2C%20Greece/homes?query=Paros%2C%20Greece&amp;checkin=2026-07-14&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <div class="listings-grid">
+        
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/37736418" target="_blank">Apartment in Paros</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.98 (42)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$527 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$175/night &middot; <strong>$35/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/41727781" target="_blank">Apartment in Paros</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.92 (66)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$626 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$208/night &middot; <strong>$41/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" alt="Home in Paralia Parikia" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1202149364010877793" target="_blank">Home in Paralia Parikia</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 2 baths &middot; 4.92 (12)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$785 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$261/night &middot; <strong>$52/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" alt="Home in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/13932692" target="_blank">Home in Paros</a></h4>
+                <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.93 (212)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$921 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$307/night &middot; <strong>$61/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" alt="Guest favorite" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/962194955469183310" target="_blank">Guest favorite</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.97 (30)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,006 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$335/night &middot; <strong>$67/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/738757" target="_blank">Cycladic home in Paros</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 2 baths &middot; 5.0 (59)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,121 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$373/night &middot; <strong>$74/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/35606588" target="_blank">Cycladic home in Naousa</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms &middot; 4.93 (98)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,201 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$400/night &middot; <strong>$80/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/16807309" target="_blank">Apartment in Paros</a></h4>
+                <p class="listing-details">8 guests · 3 bedrooms · 6 beds · 2 baths &middot; 4.89 (107)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,249 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$416/night &middot; <strong>$83/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" alt="Home in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1134104221241861199" target="_blank">Home in Paros</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.92 (24)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,401 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$467/night &middot; <strong>$93/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/35000888" target="_blank">Cycladic home in Naousa</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.9 (69)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,407 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$469/night &middot; <strong>$93/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" alt="Cycladic home in Krotiri" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/14293623" target="_blank">Cycladic home in Krotiri</a></h4>
+                <p class="listing-details">6 guests &middot; 5.0 (96)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,494 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$498/night &middot; <strong>$99/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/904300360982905938" target="_blank">Apartment in Naousa</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.9 (21)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,778 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$592/night &middot; <strong>$118/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/19615361" target="_blank">Apartment in Naousa</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms &middot; 4.95 (109)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,091 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$697/night &middot; <strong>$139/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/18221067" target="_blank">Cycladic home in Paros</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.93 (58)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,148 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$716/night &middot; <strong>$143/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" alt="Villa in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/24056067" target="_blank">Villa in Paros</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 5.0 (63)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,215 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$738/night &middot; <strong>$147/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1173591744802352265" target="_blank">Cycladic home in Naousa</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 6 beds · 2 baths &middot; 4.96 (24)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,322 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$774/night &middot; <strong>$154/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" alt="Home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1288288209708996463" target="_blank">Home in Naousa</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms </p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,338 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$779/night &middot; <strong>$155/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/26591774" target="_blank">Cycladic home in Naousa</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 6 beds · 2 baths &middot; 5.0 (33)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,442 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$814/night &middot; <strong>$162/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1625619624238713203" target="_blank">Apartment in Naousa</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths </p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,507 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$835/night &middot; <strong>$167/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/936040153831515155" target="_blank">Cycladic home in Paros</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms &middot; 5.0 (33)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,663 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$887/night &middot; <strong>$177/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" alt="Superhost" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/50257949" target="_blank">Superhost</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 3 baths &middot; 4.85 (60)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,778 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$926/night &middot; <strong>$185/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1050811116981677608" target="_blank">Cycladic home in Naousa</a></h4>
+                <p class="listing-details">8 guests · 4 bedrooms · 6 beds · 4 baths &middot; 5.0 (18)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$3,299 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,099/night &middot; <strong>$219/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1199270601585141622" target="_blank">Apartment in Naousa</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 4 baths &middot; 4.89 (19)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$3,929 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,309/night &middot; <strong>$261/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" alt="Villa in Naousa" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1608689961131367921" target="_blank">Villa in Naousa</a></h4>
+                <p class="listing-details">8 guests · 5 bedrooms </p>
+                <div class="listing-prices">
+                    <div class="price-main">$4,572 <span class="price-label">total (3n)</span></div>
+                    <div class="price-sub">$1,524/night &middot; <strong>$304/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Mykonos</h2></div>
+    <p style="margin-bottom:5px"><strong>Jul 17-20 (both options, 3 nights)</strong></p>
+    <p style="margin-bottom:15px; color:#6b7280">Little Venice, Scorpios (Jul 19), beach clubs, nightlife</p>
+    
+    <div id="map_island2" class="island-map"></div>
+    <script>
+        var map_island2 = L.map('map_island2').setView([37.44, 25.35], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png', {
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+        }).addTo(map_island2);
+        var markers_island2 = [];
+        
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$695</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$695'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$753</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$753'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$934</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$934'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,026</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$1,026'));
+
+        markers_island2.push(L.marker([37.4452, 25.323900000000002], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,034</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Mykonos</b><br>$1,034'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,204</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$1,204'));
+
+        markers_island2.push(L.marker([37.4452, 25.323900000000002], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,380</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Mykonos</b><br>$1,380'));
+
+        markers_island2.push(L.marker([37.432300000000005, 25.3215], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,408</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Home in Mykonos</b><br>$1,408'));
+
+        markers_island2.push(L.marker([37.4452, 25.323900000000002], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,521</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Mykonos</b><br>$1,521'));
+
+        markers_island2.push(L.marker([37.404199999999996, 25.3585], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,612</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Platýs Gialós</b><br>$1,612'));
+
+        markers_island2.push(L.marker([37.4452, 25.323900000000002], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,624</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Mykonos</b><br>$1,624'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,732</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$1,732'));
+
+        markers_island2.push(L.marker([37.4095, 25.348899999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,760</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Ornós</b><br>$1,760'));
+
+        markers_island2.push(L.marker([37.4311, 25.3249], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,852</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Ornós</b><br>$1,852'));
+
+        markers_island2.push(L.marker([37.4452, 25.323900000000002], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$1,968</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Cycladic home in Mykonos</b><br>$1,968'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,026</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$2,026'));
+
+        markers_island2.push(L.marker([37.4194, 25.336599999999997], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,373</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Home in Ornós</b><br>$2,373'));
+
+        markers_island2.push(L.marker([37.4407, 25.3362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$2,686</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$2,686'));
+
+        markers_island2.push(L.marker([37.435, 25.403], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">NUMO Mykonos</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>NUMO Mykonos</b><br>$1,729 total'));
+
+        markers_island2.push(L.marker([37.46, 25.39], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Pietra e Mare</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Pietra e Mare</b><br>$2,284 total'));
+
+        if (markers_island2.length > 0) {
+            var bounds_island2 = L.latLngBounds([[37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.432300000000005, 25.3215], [37.4452, 25.323900000000002], [37.404199999999996, 25.3585], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4095, 25.348899999999997], [37.4311, 25.3249], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4194, 25.336599999999997], [37.4407, 25.3362], [37.435, 25.403], [37.46, 25.39]]);
+            map_island2.fitBounds(bounds_island2.pad(0.15));
+        }
+    </script>
+    <a class="search-link" href="https://www.airbnb.com/s/Mykonos%2C%20Greece/homes?query=Mykonos%2C%20Greece&amp;checkin=2026-07-15&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <h3 style="margin:25px 0 15px">Hotels (confirmed pricing, Jul 17-20, 3 nights, 5 people)</h3>
+    <div class="hotel-card">
+        <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" alt="NUMO Mykonos" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>NUMO Mykonos Boutique Resort</h4>
+        <p class="location">Kalafatis Beach (far east, quiet) &middot; Eco-friendly, retro-chic &middot; <a href="https://www.tablethotels.com/en/mykonos-hotels/numo-mykonos-boutique-resort" target="_blank">Tablet Hotels</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room 1: Evergreen Retreat Garden View Terrace</div><div class="room-price">$738.90</div></div>
+            <div class="hotel-room"><div class="room-name">Room 2: Evergreen Retreat Side Sea View Terrace</div><div class="room-price">$729.67</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$1,729.07</span> <span style="color:#6b7280">total incl. tax</span></div>
+            <div class="per-person"><strong>$115.27</strong>/person/night &middot; $345.81/person total</div>
+        </div>
+        </div>
+    </div>
+    <div class="hotel-card">
+        <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" alt="Pietra e Mare" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Pietra e Mare</h4>
+        <p class="location">Mykonos &middot; <a href="https://www.tablethotels.com" target="_blank">Tablet Hotels</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room 1: Superior Double Room with Sea View</div><div class="room-price">$1,103.25</div></div>
+            <div class="hotel-room"><div class="room-name">Room 2: Classic Double Room</div><div class="room-price">$843.40</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$2,283.91</span> <span style="color:#6b7280">total incl. tax</span></div>
+            <div class="per-person"><strong>$152.26</strong>/person/night &middot; $456.78/person total</div>
+        </div>
+        </div>
+    </div>
+    <h3 style="margin:25px 0 15px">Airbnb Options</h3>
+
+    <div class="listings-grid">
+        
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/817852363190103242" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 1 bedroom · 4 beds · 1 bath &middot; 4.83 (47)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$695 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$347/night &middot; <strong>$69/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1147101591678302574" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 1 bedroom · 2 beds · 2 baths &middot; 4.85 (27)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$753 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$376/night &middot; <strong>$75/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/33204311" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.89 (65)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$934 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$467/night &middot; <strong>$93/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/25614481" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">7 guests · 2 bedrooms · 6 beds · 2 baths &middot; 5.0 (11)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,026 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$513/night &middot; <strong>$102/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/32707518" target="_blank">Cycladic home in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.86 (88)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,034 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$517/night &middot; <strong>$103/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1383887026422637154" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.95 (19)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,204 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$602/night &middot; <strong>$120/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1028790826121786908" target="_blank">Cycladic home in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 1 bedroom · 5 beds · 1 bath &middot; 4.77 (52)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,380 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$690/night &middot; <strong>$138/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" alt="Home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/35557769" target="_blank">Home in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 5 beds · 2 baths &middot; 4.88 (65)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,408 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$704/night &middot; <strong>$140/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/7660317" target="_blank">Cycladic home in Mykonos</a></h4>
+                <p class="listing-details">6 guests &middot; 4.75 (97)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,521 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$760/night &middot; <strong>$152/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" alt="Apartment in Platýs Gialós" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1097706539841323101" target="_blank">Apartment in Platýs Gialós</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.89 (47)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,612 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$806/night &middot; <strong>$161/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1653594063142305532" target="_blank">Cycladic home in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths </p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,624 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$812/night &middot; <strong>$162/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/44550048" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">7 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.97 (74)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,732 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$866/night &middot; <strong>$173/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" alt="Cycladic home in Ornós" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/24555346" target="_blank">Cycladic home in Ornós</a></h4>
+                <p class="listing-details">8 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.9 (84)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,760 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$880/night &middot; <strong>$176/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" alt="Apartment in Ornós" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/53332527" target="_blank">Apartment in Ornós</a></h4>
+                <p class="listing-details">5 guests &middot; 4.88 (33)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,852 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$926/night &middot; <strong>$185/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/20171340" target="_blank">Cycladic home in Mykonos</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.98 (97)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$1,968 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$984/night &middot; <strong>$196/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/31976875" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.99 (202)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,026 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$1,013/night &middot; <strong>$202/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" alt="Home in Ornós" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/41872157" target="_blank">Home in Ornós</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.95 (213)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,373 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$1,186/night &middot; <strong>$237/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/19498191" target="_blank">Apartment in Mykonos</a></h4>
+                <p class="listing-details">6 guests &middot; 4.94 (166)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$2,686 <span class="price-label">total (2n)</span></div>
+                    <div class="price-sub">$1,343/night &middot; <strong>$268/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Athens</h2></div>
+    <p style="margin-bottom:5px"><strong>Jul 20-21 (both options)</strong></p>
+    <p style="margin-bottom:15px; color:#6b7280">Last night, dinner in Plaka/Psyrri, fly out Jul 21</p>
+    
+    <div id="map_island3" class="island-map"></div>
+    <script>
+        var map_island3 = L.map('map_island3').setView([37.975, 23.725], 14);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png', {
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+        }).addTo(map_island3);
+        var markers_island3 = [];
+        
+        markers_island3.push(L.marker([37.9628, 23.7362], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$134</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Monastiraki</b><br>$134'));
+
+        markers_island3.push(L.marker([37.9759, 23.712100000000003], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$134</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Athens</b><br>$134'));
+
+        markers_island3.push(L.marker([37.971599999999995, 23.731900000000003], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$161</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Exarcheia</b><br>$161'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$179</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$179'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$188</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$188'));
+
+        markers_island3.push(L.marker([37.967699999999994, 23.7182], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$191</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Thissio</b><br>$191'));
+
+        markers_island3.push(L.marker([37.9925, 23.7062], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$196</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Metaxourgeio</b><br>$196'));
+
+        markers_island3.push(L.marker([37.984, 23.715799999999998], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#22c55e;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$201</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Gazi</b><br>$201'));
+
+        markers_island3.push(L.marker([37.9566, 23.7374], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$214</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Mets</b><br>$214'));
+
+        markers_island3.push(L.marker([37.979800000000004, 23.7444], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$263</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Plaka</b><br>$263'));
+
+        markers_island3.push(L.marker([37.979800000000004, 23.7444], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$319</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Plaka</b><br>$319'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$322</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$322'));
+
+        markers_island3.push(L.marker([37.9714, 23.706100000000003], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$360</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Kerameikos</b><br>$360'));
+
+        markers_island3.push(L.marker([37.9684, 23.7243], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$372</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Loft in Koukaki</b><br>$372'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$393</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$393'));
+
+        markers_island3.push(L.marker([37.9634, 23.7224], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#3b82f6;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$501</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Monastiraki</b><br>$501'));
+
+        markers_island3.push(L.marker([37.9795, 23.7279], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$529</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Koukaki</b><br>$529'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$538</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$538'));
+
+        markers_island3.push(L.marker([37.9793, 23.7282], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$561</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Psyri</b><br>$561'));
+
+        markers_island3.push(L.marker([37.9759, 23.712100000000003], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$574</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Athens</b><br>$574'));
+
+        markers_island3.push(L.marker([37.9953, 23.7469], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$627</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Exarcheia</b><br>$627'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$642</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$642'));
+
+        markers_island3.push(L.marker([37.981300000000005, 23.724], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$694</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Condo in Plaka</b><br>$694'));
+
+        markers_island3.push(L.marker([37.9666, 23.7379], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#a855f7;color:white;padding:2px 6px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">$712</div>',
+                iconSize: null,
+                iconAnchor: [30, 15]
+            })
+        }).addTo(map_island3).bindPopup('<b>Apartment in Athens</b><br>$712'));
+
+        if (markers_island3.length > 0) {
+            var bounds_island3 = L.latLngBounds([[37.9628, 23.7362], [37.9759, 23.712100000000003], [37.971599999999995, 23.731900000000003], [37.9666, 23.7379], [37.9666, 23.7379], [37.967699999999994, 23.7182], [37.9925, 23.7062], [37.984, 23.715799999999998], [37.9566, 23.7374], [37.979800000000004, 23.7444], [37.979800000000004, 23.7444], [37.9666, 23.7379], [37.9714, 23.706100000000003], [37.9684, 23.7243], [37.9666, 23.7379], [37.9634, 23.7224], [37.9795, 23.7279], [37.9666, 23.7379], [37.9793, 23.7282], [37.9759, 23.712100000000003], [37.9953, 23.7469], [37.9666, 23.7379], [37.981300000000005, 23.724], [37.9666, 23.7379]]);
+            map_island3.fitBounds(bounds_island3.pad(0.15));
+        }
+    </script>
+    <a class="search-link" href="https://www.airbnb.com/s/Athens%2C%20Greece/homes?query=Athens%2C%20Greece&amp;checkin=2026-07-20&amp;checkout=2026-07-21&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <div class="listings-grid">
+        
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" alt="Apartment in Monastiraki" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1273939145811920099" target="_blank">Apartment in Monastiraki</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.8 (35)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$134 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$134/night &middot; <strong>$26/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/51256457" target="_blank">Condo in Athens</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.71 (277)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$134 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$134/night &middot; <strong>$26/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" alt="Apartment in Exarcheia" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/982589521042598757" target="_blank">Apartment in Exarcheia</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.91 (187)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$161 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$161/night &middot; <strong>$32/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/23986132" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.9 (560)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$179 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$179/night &middot; <strong>$35/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/24449568" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">5 guests · 1 bedroom · 3 beds · 1 bath &middot; 4.92 (529)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$188 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$188/night &middot; <strong>$37/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" alt="Apartment in Thissio" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/24366011" target="_blank">Apartment in Thissio</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.89 (567)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$191 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$191/night &middot; <strong>$38/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" alt="Apartment in Metaxourgeio" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/18791961" target="_blank">Apartment in Metaxourgeio</a></h4>
+                <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.8 (409)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$196 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$196/night &middot; <strong>$39/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" alt="Apartment in Gazi" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#22c55e">Budget</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/19758093" target="_blank">Apartment in Gazi</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 1 bath &middot; 4.83 (458)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$201 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$201/night &middot; <strong>$40/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" alt="Condo in Mets" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/52552823" target="_blank">Condo in Mets</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.89 (339)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$214 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$214/night &middot; <strong>$42/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/22359269" target="_blank">Apartment in Plaka</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.9 (684)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$263 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$263/night &middot; <strong>$52/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/50467116" target="_blank">Apartment in Plaka</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.89 (190)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$319 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$319/night &middot; <strong>$63/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/52161410" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms &middot; 4.87 (97)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$322 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$322/night &middot; <strong>$64/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" alt="Condo in Kerameikos" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1577457201045971100" target="_blank">Condo in Kerameikos</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 3 beds · 2 baths &middot; 5.0 (9)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$360 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$360/night &middot; <strong>$72/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" alt="Loft in Koukaki" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 8</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1571613810085707438" target="_blank">Loft in Koukaki</a></h4>
+                <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 3 baths &middot; 5.0 (12)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$372 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$372/night &middot; <strong>$74/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1130185173023248883" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.96 (159)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$393 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$393/night &middot; <strong>$78/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" alt="Condo in Monastiraki" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/564904740793335873" target="_blank">Condo in Monastiraki</a></h4>
+                <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.92 (356)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$501 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$501/night &middot; <strong>$100/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" alt="Apartment in Koukaki" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1153401936359103141" target="_blank">Apartment in Koukaki</a></h4>
+                <p class="listing-details">5 guests · 3 bedrooms &middot; 4.93 (130)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$529 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$529/night &middot; <strong>$105/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/1218027360514018639" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 5.0 (36)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$538 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$538/night &middot; <strong>$107/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" alt="Apartment in Psyri" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 10</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/28634342" target="_blank">Apartment in Psyri</a></h4>
+                <p class="listing-details">10 guests · 4 bedrooms &middot; 4.97 (74)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$561 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$561/night &middot; <strong>$112/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/50132018" target="_blank">Condo in Athens</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.89 (498)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$574 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$574/night &middot; <strong>$114/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" alt="Condo in Exarcheia" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/3036157" target="_blank">Condo in Exarcheia</a></h4>
+                <p class="listing-details">5 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.99 (165)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$627 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$627/night &middot; <strong>$125/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 7</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/23427054" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.92 (270)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$642 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$642/night &middot; <strong>$128/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" alt="Condo in Plaka" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 5</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/920813668180190104" target="_blank">Condo in Plaka</a></h4>
+                <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.97 (113)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$694 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$694/night &middot; <strong>$138/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-card">
+            <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
+            <div class="listing-info">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
+                    <span class="tier-badge" style="background:#a855f7">Luxury</span>
+                    <span class="guest-badge">Sleeps 6</span>
+                </div>
+                <h4><a href="https://www.airbnb.com/rooms/949112878294417606" target="_blank">Apartment in Athens</a></h4>
+                <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.88 (117)</p>
+                <div class="listing-prices">
+                    <div class="price-main">$712 <span class="price-label">total (1n)</span></div>
+                    <div class="price-sub">$712/night &middot; <strong>$142/person/night</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header"><h2>Cost Summary</h2></div>
+    <h3 style="margin-bottom:15px">Option A: 7-Day Trip (Jul 14-21)</h3>
+    <p style="margin-bottom:10px; color:#6b7280">Milos (3n) &rarr; Mykonos (3n) &rarr; Athens (1n)</p>
+    <div class="cost-table"><table>
+        <tr><th>Category</th><th>Airbnb (mid)</th><th>NUMO Hotel</th><th>Pietra e Mare</th></tr>
+        <tr><td>Flight (NYC)</td><td>$1,031</td><td>$1,031</td><td>$1,031</td></tr>
+        <tr><td>Flight (LA)</td><td>$1,123</td><td>$1,123</td><td>$1,123</td></tr>
+        <tr><td>Ferries</td><td>$219</td><td>$219</td><td>$219</td></tr>
+        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td></tr>
+        <tr><td>Mykonos 3n (/5)</td><td>~$360</td><td>$346</td><td>$457</td></tr>
+        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td></tr>
+        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$1,872</strong></td><td><strong>$1,858</strong></td><td><strong>$1,969</strong></td></tr>
+        <tr class="total-row"><td>Per person (LA)</td><td><strong>$1,964</strong></td><td><strong>$1,950</strong></td><td><strong>$2,061</strong></td></tr>
+    </table></div>
+
+    <h3 style="margin:30px 0 15px">Option B: 10-Day Trip (Jul 11-21)</h3>
+    <p style="margin-bottom:10px; color:#6b7280">Milos (3n) &rarr; Paros (3n) &rarr; Mykonos (3n) &rarr; Athens (1n)</p>
+    <div class="cost-table"><table>
+        <tr><th>Category</th><th>Airbnb (mid)</th><th>NUMO Hotel</th><th>Pietra e Mare</th></tr>
+        <tr><td>Flight (NYC)</td><td>$1,142</td><td>$1,142</td><td>$1,142</td></tr>
+        <tr><td>Flight (LA)</td><td>$1,196</td><td>$1,196</td><td>$1,196</td></tr>
+        <tr><td>Ferries</td><td>$235</td><td>$235</td><td>$235</td></tr>
+        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td></tr>
+        <tr><td>Paros 3n (/5)</td><td>$184</td><td>$184</td><td>$184</td></tr>
+        <tr><td>Mykonos 3n (/5)</td><td>~$360</td><td>$346</td><td>$457</td></tr>
+        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td></tr>
+        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$2,183</strong></td><td><strong>$2,169</strong></td><td><strong>$2,280</strong></td></tr>
+        <tr class="total-row"><td>Per person (LA)</td><td><strong>$2,237</strong></td><td><strong>$2,223</strong></td><td><strong>$2,334</strong></td></tr>
+    </table></div>
+
+    <div class="findings">
+        <h3>Key Findings</h3>
+        <ul style="padding-left: 20px">
+            <li><strong>7-day saves ~$275-310/person</strong> vs 10-day</li>
+            <li><strong>10-day adds Paros</strong> &mdash; cheapest island, only ~$184pp for 3 nights</li>
+            <li><strong>NUMO Mykonos ($346pp/3n)</strong> great value vs Pietra e Mare ($457pp) &mdash; saves $555 for the group</li>
+            <li><strong>Must be in Mykonos by Jul 19</strong> for Scorpios</li>
+            <li><strong>Not included:</strong> food (~$50-100/day), activities, car/ATV rental (~$30-60/day), taxis</li>
+        </ul>
+    </div>
+</div>
+
+<p style="text-align:center; color:#9ca3af; padding: 40px 0; font-size:0.8em">
+    Prices scraped Apr 1, 2026. Flights: Google Flights. Airbnbs: airbnb.com (5 guests, entire homes). Hotels: Tablet Hotels.<br>
+    Airbnb totals include all fees. Hotel totals include taxes.
+</p>
+
+</div>
+</body>
+</html>
