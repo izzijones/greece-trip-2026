@@ -75,6 +75,48 @@ a:hover { text-decoration: underline; }
 .findings { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #86efac; border-radius: 16px; padding: 24px; margin-top: 20px; }
 .findings h3 { color: #059669; margin-bottom: 12px; }
 .findings li { margin-bottom: 8px; }
+/* Heart/favorite button */
+.heart-btn { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; z-index: 2; transition: transform 0.15s; backdrop-filter: blur(4px); }
+.heart-btn:hover { transform: scale(1.15); }
+.heart-btn.hearted { background: #fee2e2; }
+.heart-btn.hearted::after { content: "\2764"; color: #ef4444; }
+.heart-btn:not(.hearted)::after { content: "\2661"; color: #9ca3af; }
+.hotel-card { position: relative; }
+.listing-card { position: relative; }
+.selectable-row .heart-cell { width: 32px; text-align: center; }
+.row-heart { cursor: pointer; font-size: 16px; color: #d1d5db; transition: transform 0.15s; }
+.row-heart:hover { transform: scale(1.2); }
+.row-heart.hearted { color: #ef4444; }
+
+/* Favorites panel */
+.favorites-panel { display: none; background: linear-gradient(135deg, #fef2f2, #fff1f2); border: 2px solid #fecaca; border-radius: 20px; padding: 28px; margin-bottom: 40px; }
+.favorites-panel.visible { display: block; }
+.favorites-panel h3 { font-size: 1.3em; margin-bottom: 16px; color: #dc2626; }
+.fav-group { margin-bottom: 20px; }
+.fav-group-title { font-size: 0.8em; text-transform: uppercase; font-weight: 700; color: #6b7280; letter-spacing: 0.5px; margin-bottom: 8px; padding-left: 4px; }
+.fav-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+.fav-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); width: 180px; flex-shrink: 0; position: relative; transition: all 0.15s; }
+.fav-card.is-picked { outline: 3px solid #059669; box-shadow: 0 0 0 6px rgba(5,150,105,0.15); }
+.fav-card img { width: 100%; height: 100px; object-fit: cover; }
+.fav-card .fc-icon { height: 100px; display: flex; align-items: center; justify-content: center; font-size: 3em; background: linear-gradient(135deg, #dbeafe, #e0e7ff); }
+.fav-card .fc-body { padding: 10px; }
+.fav-card .fc-name { font-size: 0.82em; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fav-card .fc-name a { color: #1c1917; }
+.fav-card .fc-price { font-size: 0.88em; font-weight: 700; color: #059669; margin-bottom: 6px; }
+.fav-card .fc-actions { display: flex; gap: 6px; }
+.fav-card .fc-pick { flex: 1; padding: 5px 0; border-radius: 6px; border: 1.5px solid #2563eb; background: white; color: #2563eb; font-size: 0.75em; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; }
+.fav-card .fc-pick:hover { background: #2563eb; color: white; }
+.fav-card .fc-pick.picked { background: #059669; color: white; border-color: #059669; }
+.fav-card .fc-remove { padding: 5px 8px; border-radius: 6px; border: 1.5px solid #e5e7eb; background: white; color: #9ca3af; font-size: 0.85em; cursor: pointer; transition: all 0.15s; }
+.fav-card .fc-remove:hover { border-color: #ef4444; color: #ef4444; }
+.fav-card .heart-corner { position: absolute; top: 6px; right: 6px; color: #ef4444; font-size: 14px; }
+@media (max-width: 768px) {
+    .fav-cards { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+    .fav-card { width: 160px; min-width: 160px; }
+    .fav-card img { height: 80px; }
+    .fav-card .fc-icon { height: 80px; font-size: 2.5em; }
+}
+
 /* Selectable items */
 .selectable { cursor: pointer; transition: outline 0.15s, box-shadow 0.15s; }
 .selectable.selected { outline: 3px solid #2563eb; box-shadow: 0 0 0 6px rgba(37,99,235,0.15); }
@@ -184,6 +226,7 @@ body.has-cost-bar { padding-bottom: 80px; }
     <a href="#sec-mykonos"><span class="nav-dot dot-mykonos"></span>Mykonos</a>
     <a href="#sec-athens"><span class="nav-dot dot-athens"></span>Athens</a>
     <a href="#sec-cost"><span class="nav-dot dot-cost"></span>Cost Summary</a>
+    <a href="#favoritesPanel" id="navFavorites" style="display:none"><span class="nav-dot" style="background:#ef4444"></span>Favorites</a>
     <a href="#summaryPanel" id="navSelections" style="display:none"><span class="nav-dot dot-selections"></span>Your Picks</a>
 </nav>
 
@@ -223,22 +266,22 @@ body.has-cost-bar { padding-bottom: 80px; }
         <h3>Option A: Jul 14-21 (7-day) &mdash; click to select</h3>
         <table>
             <tr><th></th><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1031" data-label="Delta Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 45m</td><td class="price-cell">$1,031</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1072" data-label="American Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,072</td><td></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1123" data-label="United 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>United</td><td>1 stop (EWR)</td><td>16h 10m</td><td class="price-cell">$1,123</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1125" data-label="Air France 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Air France</td><td>1 stop (CDG)</td><td>16h 25m</td><td class="price-cell">$1,125</td><td></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1148" data-label="Norse Atlantic Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Norse Atlantic</td><td>Nonstop</td><td>9h 5m</td><td class="price-cell">$1,148</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1031" data-label="Delta Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 45m</td><td class="price-cell">$1,031</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1072" data-label="American Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,072</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1123" data-label="United 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>LA (LAX)</td><td>United</td><td>1 stop (EWR)</td><td>16h 10m</td><td class="price-cell">$1,123</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1125" data-label="Air France 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>LA (LAX)</td><td>Air France</td><td>1 stop (CDG)</td><td>16h 25m</td><td class="price-cell">$1,125</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1148" data-label="Norse Atlantic Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>Norse Atlantic</td><td>Nonstop</td><td>9h 5m</td><td class="price-cell">$1,148</td><td></td></tr>
         </table>
     </div>
     <div class="flight-group">
         <h3>Option B: Jul 11-21 (10-day) &mdash; click to select</h3>
         <table>
             <tr><th></th><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
-            <tr class="selectable-row" data-category="flight" data-total="989" data-label="Air Serbia 1-stop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Air Serbia</td><td>1 stop (BEG)</td><td>12h 20m</td><td class="price-cell">$989</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1142" data-label="American Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,142</td><td></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1501" data-label="Delta Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 40m</td><td class="price-cell">$1,501</td><td></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1196" data-label="Delta 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Delta</td><td>1 stop (ATL)</td><td>17h 20m</td><td class="price-cell">$1,196</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
-            <tr class="selectable-row" data-category="flight" data-total="1199" data-label="Air Canada 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Air Canada</td><td>1 stop (YYZ)</td><td>15h 45m</td><td class="price-cell">$1,199</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="989" data-label="Air Serbia 1-stop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>Air Serbia</td><td>1 stop (BEG)</td><td>12h 20m</td><td class="price-cell">$989</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1142" data-label="American Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,142</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1501" data-label="Delta Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 40m</td><td class="price-cell">$1,501</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1196" data-label="Delta 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>LA (LAX)</td><td>Delta</td><td>1 stop (ATL)</td><td>17h 20m</td><td class="price-cell">$1,196</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1199" data-label="Air Canada 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td class="heart-cell"><span class="row-heart" onclick="event.stopPropagation(); toggleRowHeart(this)">&#9825;</span></td><td>LA (LAX)</td><td>Air Canada</td><td>1 stop (YYZ)</td><td>15h 45m</td><td class="price-cell">$1,199</td><td></td></tr>
         </table>
     </div>
     <p style="color:#9ca3af; font-size:0.8em">Prices scraped from Google Flights on Apr 1, 2026.</p>
@@ -495,7 +538,8 @@ body.has-cost-bar { padding-bottom: 80px; }
     <a class="search-link" href="https://www.airbnb.com/s/Milos%2C%20Greece/homes?query=Milos%2C%20Greece&amp;checkin=2026-07-11&amp;checkout=2026-07-14&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card selectable" data-category="milos" data-total="473" data-label="Home in Kimolos" data-photo="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" data-nights="3" data-perperson="$31" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="473" data-label="Home in Kimolos" data-photo="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" data-nights="3" data-perperson="$31" data-url="https://www.airbnb.com/rooms/3474759" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-473-0" data-fav-cat="milos" data-fav-label="Home in Kimolos" data-fav-price="$473" data-fav-photo="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/3474759"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" alt="Home in Kimolos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -510,7 +554,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="643" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" data-nights="3" data-perperson="$42" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="643" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" data-nights="3" data-perperson="$42" data-url="https://www.airbnb.com/rooms/44581868" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-643-1" data-fav-cat="milos" data-fav-label="Cycladic home in Milos" data-fav-price="$643" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/44581868"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -525,7 +570,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1001" data-label="Home in Kamares" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" data-nights="3" data-perperson="$66" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1001" data-label="Home in Kamares" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" data-nights="3" data-perperson="$66" data-url="https://www.airbnb.com/rooms/33917419" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1001-2" data-fav-cat="milos" data-fav-label="Home in Kamares" data-fav-price="$1,001" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/33917419"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" alt="Home in Kamares" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -540,7 +586,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1041" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" data-nights="3" data-perperson="$69" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1041" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" data-nights="3" data-perperson="$69" data-url="https://www.airbnb.com/rooms/39770387" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1041-3" data-fav-cat="milos" data-fav-label="Home in Adamas" data-fav-price="$1,041" data-fav-photo="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/39770387"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -555,7 +602,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1114" data-label="Cycladic home in Ano Petali" data-photo="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1114" data-label="Cycladic home in Ano Petali" data-photo="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" data-nights="3" data-perperson="$74" data-url="https://www.airbnb.com/rooms/18505023" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1114-4" data-fav-cat="milos" data-fav-label="Cycladic home in Ano Petali" data-fav-price="$1,114" data-fav-photo="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/18505023"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" alt="Cycladic home in Ano Petali" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -570,7 +618,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1121" data-label="Home in Trypiti" data-photo="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1121" data-label="Home in Trypiti" data-photo="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" data-nights="3" data-perperson="$74" data-url="https://www.airbnb.com/rooms/7228810" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1121-5" data-fav-cat="milos" data-fav-label="Home in Trypiti" data-fav-price="$1,121" data-fav-photo="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/7228810"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" alt="Home in Trypiti" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -585,7 +634,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1148" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" data-nights="3" data-perperson="$76" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1148" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" data-nights="3" data-perperson="$76" data-url="https://www.airbnb.com/rooms/16107041" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1148-6" data-fav-cat="milos" data-fav-label="Cycladic home in Adamas" data-fav-price="$1,148" data-fav-photo="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/16107041"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -600,7 +650,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1161" data-label="Cycladic home in Greece" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" data-nights="3" data-perperson="$77" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1161" data-label="Cycladic home in Greece" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" data-nights="3" data-perperson="$77" data-url="https://www.airbnb.com/rooms/619554585499505617" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1161-7" data-fav-cat="milos" data-fav-label="Cycladic home in Greece" data-fav-price="$1,161" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/619554585499505617"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" alt="Cycladic home in Greece" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -615,7 +666,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1262" data-label="Home in Plaka" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" data-nights="3" data-perperson="$84" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1262" data-label="Home in Plaka" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" data-nights="3" data-perperson="$84" data-url="https://www.airbnb.com/rooms/1358786536755863937" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1262-8" data-fav-cat="milos" data-fav-label="Home in Plaka" data-fav-price="$1,262" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1358786536755863937"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" alt="Home in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -630,7 +682,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1335" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" data-nights="3" data-perperson="$89" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1335" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" data-nights="3" data-perperson="$89" data-url="https://www.airbnb.com/rooms/27426118" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1335-9" data-fav-cat="milos" data-fav-label="Apartment in Adamas" data-fav-price="$1,335" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/27426118"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -645,7 +698,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1382" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" data-nights="3" data-perperson="$92" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1382" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" data-nights="3" data-perperson="$92" data-url="https://www.airbnb.com/rooms/54109304" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1382-10" data-fav-cat="milos" data-fav-label="Cycladic home in Milos" data-fav-price="$1,382" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/54109304"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -660,7 +714,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1531" data-label="Home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" data-nights="3" data-perperson="$102" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1531" data-label="Home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" data-nights="3" data-perperson="$102" data-url="https://www.airbnb.com/rooms/842519640722864877" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1531-11" data-fav-cat="milos" data-fav-label="Home in Milos" data-fav-price="$1,531" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/842519640722864877"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" alt="Home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -675,7 +730,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1581" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" data-nights="3" data-perperson="$105" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1581" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" data-nights="3" data-perperson="$105" data-url="https://www.airbnb.com/rooms/2208534" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1581-12" data-fav-cat="milos" data-fav-label="Cycladic home in Adamas" data-fav-price="$1,581" data-fav-photo="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/2208534"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -690,7 +746,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1771" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" data-nights="3" data-perperson="$118" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1771" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" data-nights="3" data-perperson="$118" data-url="https://www.airbnb.com/rooms/1157088631827872475" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1771-13" data-fav-cat="milos" data-fav-label="Apartment in Adamas" data-fav-price="$1,771" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1157088631827872475"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -705,7 +762,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="1973" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" data-nights="3" data-perperson="$131" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="1973" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" data-nights="3" data-perperson="$131" data-url="https://www.airbnb.com/rooms/951147339673881883" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-1973-14" data-fav-cat="milos" data-fav-label="Apartment in Adamas" data-fav-price="$1,973" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/951147339673881883"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -720,7 +778,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="2122" data-label="Cycladic home in skinopi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" data-nights="3" data-perperson="$141" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="2122" data-label="Cycladic home in skinopi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" data-nights="3" data-perperson="$141" data-url="https://www.airbnb.com/rooms/30309428" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-2122-15" data-fav-cat="milos" data-fav-label="Cycladic home in skinopi" data-fav-price="$2,122" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/30309428"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" alt="Cycladic home in skinopi" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -735,7 +794,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="2268" data-label="Cycladic home in Klima" data-photo="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" data-nights="3" data-perperson="$151" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="2268" data-label="Cycladic home in Klima" data-photo="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" data-nights="3" data-perperson="$151" data-url="https://www.airbnb.com/rooms/9058587" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-2268-16" data-fav-cat="milos" data-fav-label="Cycladic home in Klima" data-fav-price="$2,268" data-fav-photo="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/9058587"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" alt="Cycladic home in Klima" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -750,7 +810,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="2418" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" data-nights="3" data-perperson="$161" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="2418" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" data-nights="3" data-perperson="$161" data-url="https://www.airbnb.com/rooms/20693576" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-2418-17" data-fav-cat="milos" data-fav-label="Cycladic home in Milos" data-fav-price="$2,418" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" data-fav-url="https://www.airbnb.com/rooms/20693576"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -765,7 +826,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="2802" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" data-nights="3" data-perperson="$186" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="2802" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" data-nights="3" data-perperson="$186" data-url="https://www.airbnb.com/rooms/7425700" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-2802-18" data-fav-cat="milos" data-fav-label="Cycladic home in Milos" data-fav-price="$2,802" data-fav-photo="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/7425700"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -780,7 +842,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="3288" data-label="Villa in Pachaina" data-photo="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" data-nights="3" data-perperson="$219" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="3288" data-label="Villa in Pachaina" data-photo="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" data-nights="3" data-perperson="$219" data-url="https://www.airbnb.com/rooms/24157350" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-3288-19" data-fav-cat="milos" data-fav-label="Villa in Pachaina" data-fav-price="$3,288" data-fav-photo="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/24157350"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" alt="Villa in Pachaina" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -795,7 +858,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="3566" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" data-nights="3" data-perperson="$237" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="3566" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" data-nights="3" data-perperson="$237" data-url="https://www.airbnb.com/rooms/1142647114111445826" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-3566-20" data-fav-cat="milos" data-fav-label="Cycladic home in Adamas" data-fav-price="$3,566" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1142647114111445826"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -810,7 +874,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="5036" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" data-nights="3" data-perperson="$335" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="5036" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" data-nights="3" data-perperson="$335" data-url="https://www.airbnb.com/rooms/32249613" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-5036-21" data-fav-cat="milos" data-fav-label="Home in Adamas" data-fav-price="$5,036" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/32249613"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -825,7 +890,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="5501" data-label="Cycladic home in Mandrakia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" data-nights="3" data-perperson="$366" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="5501" data-label="Cycladic home in Mandrakia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" data-nights="3" data-perperson="$366" data-url="https://www.airbnb.com/rooms/39911683" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-5501-22" data-fav-cat="milos" data-fav-label="Cycladic home in Mandrakia" data-fav-price="$5,501" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/39911683"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" alt="Cycladic home in Mandrakia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -840,7 +906,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="milos" data-total="7364" data-label="Villa in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" data-nights="3" data-perperson="$490" onclick="selectItem(this, 'milos')">
+        <div class="listing-card selectable" data-category="milos" data-total="7364" data-label="Villa in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" data-nights="3" data-perperson="$490" data-url="https://www.airbnb.com/rooms/1116806982677932689" onclick="selectItem(this, 'milos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="milos-7364-23" data-fav-cat="milos" data-fav-label="Villa in Milos" data-fav-price="$7,364" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1116806982677932689"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" alt="Villa in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1077,7 +1144,8 @@ body.has-cost-bar { padding-bottom: 80px; }
     <a class="search-link" href="https://www.airbnb.com/s/Paros%2C%20Greece/homes?query=Paros%2C%20Greece&amp;checkin=2026-07-14&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card selectable" data-category="paros" data-total="527" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" data-nights="3" data-perperson="$35" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="527" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" data-nights="3" data-perperson="$35" data-url="https://www.airbnb.com/rooms/37736418" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-527-0" data-fav-cat="paros" data-fav-label="Apartment in Paros" data-fav-price="$527" data-fav-photo="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/37736418"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1092,7 +1160,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="626" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" data-nights="3" data-perperson="$41" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="626" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" data-nights="3" data-perperson="$41" data-url="https://www.airbnb.com/rooms/41727781" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-626-1" data-fav-cat="paros" data-fav-label="Apartment in Paros" data-fav-price="$626" data-fav-photo="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/41727781"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1107,7 +1176,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="785" data-label="Home in Paralia Parikia" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" data-nights="3" data-perperson="$52" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="785" data-label="Home in Paralia Parikia" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" data-nights="3" data-perperson="$52" data-url="https://www.airbnb.com/rooms/1202149364010877793" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-785-2" data-fav-cat="paros" data-fav-label="Home in Paralia Parikia" data-fav-price="$785" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1202149364010877793"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" alt="Home in Paralia Parikia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1122,7 +1192,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="921" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" data-nights="3" data-perperson="$61" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="921" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" data-nights="3" data-perperson="$61" data-url="https://www.airbnb.com/rooms/13932692" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-921-3" data-fav-cat="paros" data-fav-label="Home in Paros" data-fav-price="$921" data-fav-photo="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/13932692"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" alt="Home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1137,7 +1208,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1006" data-label="Guest favorite" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" data-nights="3" data-perperson="$67" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1006" data-label="Guest favorite" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" data-nights="3" data-perperson="$67" data-url="https://www.airbnb.com/rooms/962194955469183310" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1006-4" data-fav-cat="paros" data-fav-label="Guest favorite" data-fav-price="$1,006" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/962194955469183310"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" alt="Guest favorite" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1152,7 +1224,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1121" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1121" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" data-nights="3" data-perperson="$74" data-url="https://www.airbnb.com/rooms/738757" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1121-5" data-fav-cat="paros" data-fav-label="Cycladic home in Paros" data-fav-price="$1,121" data-fav-photo="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/738757"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1167,7 +1240,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1201" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" data-nights="3" data-perperson="$80" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1201" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" data-nights="3" data-perperson="$80" data-url="https://www.airbnb.com/rooms/35606588" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1201-6" data-fav-cat="paros" data-fav-label="Cycladic home in Naousa" data-fav-price="$1,201" data-fav-photo="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/35606588"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1182,7 +1256,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1249" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" data-nights="3" data-perperson="$83" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1249" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" data-nights="3" data-perperson="$83" data-url="https://www.airbnb.com/rooms/16807309" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1249-7" data-fav-cat="paros" data-fav-label="Apartment in Paros" data-fav-price="$1,249" data-fav-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/16807309"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1197,7 +1272,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1401" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" data-nights="3" data-perperson="$93" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1401" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" data-nights="3" data-perperson="$93" data-url="https://www.airbnb.com/rooms/1134104221241861199" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1401-8" data-fav-cat="paros" data-fav-label="Home in Paros" data-fav-price="$1,401" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1134104221241861199"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" alt="Home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1212,7 +1288,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1407" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" data-nights="3" data-perperson="$93" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1407" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" data-nights="3" data-perperson="$93" data-url="https://www.airbnb.com/rooms/35000888" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1407-9" data-fav-cat="paros" data-fav-label="Cycladic home in Naousa" data-fav-price="$1,407" data-fav-photo="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/35000888"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1227,7 +1304,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1494" data-label="Cycladic home in Krotiri" data-photo="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" data-nights="3" data-perperson="$99" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1494" data-label="Cycladic home in Krotiri" data-photo="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" data-nights="3" data-perperson="$99" data-url="https://www.airbnb.com/rooms/14293623" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1494-10" data-fav-cat="paros" data-fav-label="Cycladic home in Krotiri" data-fav-price="$1,494" data-fav-photo="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/14293623"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" alt="Cycladic home in Krotiri" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1242,7 +1320,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="1778" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" data-nights="3" data-perperson="$118" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="1778" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" data-nights="3" data-perperson="$118" data-url="https://www.airbnb.com/rooms/904300360982905938" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-1778-11" data-fav-cat="paros" data-fav-label="Apartment in Naousa" data-fav-price="$1,778" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/904300360982905938"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1257,7 +1336,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2091" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" data-nights="3" data-perperson="$139" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2091" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" data-nights="3" data-perperson="$139" data-url="https://www.airbnb.com/rooms/19615361" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2091-12" data-fav-cat="paros" data-fav-label="Apartment in Naousa" data-fav-price="$2,091" data-fav-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/19615361"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1272,7 +1352,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2148" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" data-nights="3" data-perperson="$143" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2148" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" data-nights="3" data-perperson="$143" data-url="https://www.airbnb.com/rooms/18221067" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2148-13" data-fav-cat="paros" data-fav-label="Cycladic home in Paros" data-fav-price="$2,148" data-fav-photo="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/18221067"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1287,7 +1368,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2215" data-label="Villa in Paros" data-photo="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" data-nights="3" data-perperson="$147" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2215" data-label="Villa in Paros" data-photo="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" data-nights="3" data-perperson="$147" data-url="https://www.airbnb.com/rooms/24056067" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2215-14" data-fav-cat="paros" data-fav-label="Villa in Paros" data-fav-price="$2,215" data-fav-photo="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/24056067"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" alt="Villa in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1302,7 +1384,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2322" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" data-nights="3" data-perperson="$154" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2322" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" data-nights="3" data-perperson="$154" data-url="https://www.airbnb.com/rooms/1173591744802352265" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2322-15" data-fav-cat="paros" data-fav-label="Cycladic home in Naousa" data-fav-price="$2,322" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1173591744802352265"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1317,7 +1400,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2338" data-label="Home in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" data-nights="3" data-perperson="$155" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2338" data-label="Home in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" data-nights="3" data-perperson="$155" data-url="https://www.airbnb.com/rooms/1288288209708996463" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2338-16" data-fav-cat="paros" data-fav-label="Home in Naousa" data-fav-price="$2,338" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1288288209708996463"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" alt="Home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1332,7 +1416,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2442" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" data-nights="3" data-perperson="$162" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2442" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" data-nights="3" data-perperson="$162" data-url="https://www.airbnb.com/rooms/26591774" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2442-17" data-fav-cat="paros" data-fav-label="Cycladic home in Naousa" data-fav-price="$2,442" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/26591774"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1347,7 +1432,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2507" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" data-nights="3" data-perperson="$167" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2507" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" data-nights="3" data-perperson="$167" data-url="https://www.airbnb.com/rooms/1625619624238713203" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2507-18" data-fav-cat="paros" data-fav-label="Apartment in Naousa" data-fav-price="$2,507" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1625619624238713203"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1362,7 +1448,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2663" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" data-nights="3" data-perperson="$177" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2663" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" data-nights="3" data-perperson="$177" data-url="https://www.airbnb.com/rooms/936040153831515155" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2663-19" data-fav-cat="paros" data-fav-label="Cycladic home in Paros" data-fav-price="$2,663" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/936040153831515155"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1377,7 +1464,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="2778" data-label="Superhost" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" data-nights="3" data-perperson="$185" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="2778" data-label="Superhost" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" data-nights="3" data-perperson="$185" data-url="https://www.airbnb.com/rooms/50257949" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-2778-20" data-fav-cat="paros" data-fav-label="Superhost" data-fav-price="$2,778" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/50257949"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" alt="Superhost" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1392,7 +1480,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="3299" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" data-nights="3" data-perperson="$219" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="3299" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" data-nights="3" data-perperson="$219" data-url="https://www.airbnb.com/rooms/1050811116981677608" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-3299-21" data-fav-cat="paros" data-fav-label="Cycladic home in Naousa" data-fav-price="$3,299" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1050811116981677608"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1407,7 +1496,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="3929" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" data-nights="3" data-perperson="$261" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="3929" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" data-nights="3" data-perperson="$261" data-url="https://www.airbnb.com/rooms/1199270601585141622" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-3929-22" data-fav-cat="paros" data-fav-label="Apartment in Naousa" data-fav-price="$3,929" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1199270601585141622"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1422,7 +1512,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="paros" data-total="4572" data-label="Villa in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" data-nights="3" data-perperson="$304" onclick="selectItem(this, 'paros')">
+        <div class="listing-card selectable" data-category="paros" data-total="4572" data-label="Villa in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" data-nights="3" data-perperson="$304" data-url="https://www.airbnb.com/rooms/1608689961131367921" onclick="selectItem(this, 'paros')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="paros-4572-23" data-fav-cat="paros" data-fav-label="Villa in Naousa" data-fav-price="$4,572" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1608689961131367921"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" alt="Villa in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1633,18 +1724,46 @@ body.has-cost-bar { padding-bottom: 80px; }
             })
         }).addTo(map_island2).bindPopup('<b>Pietra e Mare</b><br>$2,284 total'));
 
+        markers_island2.push(L.marker([37.435, 25.31], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Mykonos No5</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Mykonos No5</b><br>$2,241 total'));
+
+        markers_island2.push(L.marker([37.45, 25.325], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">A Hotel Mykonos</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>A Hotel Mykonos</b><br>$1,004 total'));
+
+        markers_island2.push(L.marker([37.448, 25.32], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Ostraco Suites</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island2).bindPopup('<b>Ostraco Suites</b><br>$2,776 total'));
+
         if (markers_island2.length > 0) {
-            var bounds_island2 = L.latLngBounds([[37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.432300000000005, 25.3215], [37.4452, 25.323900000000002], [37.404199999999996, 25.3585], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4095, 25.348899999999997], [37.4311, 25.3249], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4194, 25.336599999999997], [37.4407, 25.3362], [37.435, 25.403], [37.46, 25.39]]);
+            var bounds_island2 = L.latLngBounds([[37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.432300000000005, 25.3215], [37.4452, 25.323900000000002], [37.404199999999996, 25.3585], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4095, 25.348899999999997], [37.4311, 25.3249], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4194, 25.336599999999997], [37.4407, 25.3362], [37.435, 25.403], [37.46, 25.39], [37.435, 25.31], [37.45, 25.325], [37.448, 25.32]]);
             map_island2.fitBounds(bounds_island2.pad(0.15));
         }
     </script>
     <a class="search-link" href="https://www.airbnb.com/s/Mykonos%2C%20Greece/homes?query=Mykonos%2C%20Greece&amp;checkin=2026-07-15&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <h3 style="margin:25px 0 15px">Hotels (confirmed pricing, Jul 17-20, 3 nights, 5 people) &mdash; click to select</h3>
     <div class="hotel-card selectable" data-category="mykonos" data-total="1729" data-label="NUMO Mykonos" data-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" data-nights="3" data-perperson="$346" onclick="selectItem(this, 'mykonos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-numo" data-fav-cat="mykonos" data-fav-label="NUMO Mykonos Boutique Resort" data-fav-price="$1,729 total" data-fav-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" data-fav-url="https://www.tablethotels.com/en/mykonos-hotels/numo-mykonos-boutique-resort"></button>
         <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" alt="NUMO Mykonos" loading="lazy"></div>
         <div class="hotel-body">
         <h4>NUMO Mykonos Boutique Resort</h4>
-        <p class="location">Kalafatis Beach (far east, quiet) &middot; Eco-friendly, retro-chic &middot; <a href="https://www.tablethotels.com/en/mykonos-hotels/numo-mykonos-boutique-resort" target="_blank">Tablet Hotels</a></p>
+        <p class="location">Kalafatis Beach (far east, quiet) &middot; Eco-friendly, retro-chic &middot; <a href="https://www.tablethotels.com/en/mykonos-hotels/numo-mykonos-boutique-resort?checkin=2026-07-17&checkout=2026-07-20&guests=2" target="_blank">Book on Tablet Hotels</a></p>
         <div class="hotel-rooms">
             <div class="hotel-room"><div class="room-name">Room 1: Evergreen Retreat Garden View Terrace</div><div class="room-price">$738.90</div></div>
             <div class="hotel-room"><div class="room-name">Room 2: Evergreen Retreat Side Sea View Terrace</div><div class="room-price">$729.67</div></div>
@@ -1656,10 +1775,11 @@ body.has-cost-bar { padding-bottom: 80px; }
         </div>
     </div>
     <div class="hotel-card selectable" data-category="mykonos" data-total="2284" data-label="Pietra e Mare" data-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" data-nights="3" data-perperson="$457" onclick="selectItem(this, 'mykonos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-pietra" data-fav-cat="mykonos" data-fav-label="Pietra e Mare" data-fav-price="$2,284 total" data-fav-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" data-fav-url="https://www.tablethotels.com"></button>
         <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" alt="Pietra e Mare" loading="lazy"></div>
         <div class="hotel-body">
         <h4>Pietra e Mare</h4>
-        <p class="location">Mykonos &middot; <a href="https://www.tablethotels.com" target="_blank">Tablet Hotels</a></p>
+        <p class="location">Mykonos &middot; <a href="https://www.tablethotels.com/en/mykonos-hotels/pietra-e-mare?checkin=2026-07-17&checkout=2026-07-20&guests=2" target="_blank">Book on Tablet Hotels</a></p>
         <div class="hotel-rooms">
             <div class="hotel-room"><div class="room-name">Room 1: Superior Double Room with Sea View</div><div class="room-price">$1,103.25</div></div>
             <div class="hotel-room"><div class="room-name">Room 2: Classic Double Room</div><div class="room-price">$843.40</div></div>
@@ -1670,11 +1790,58 @@ body.has-cost-bar { padding-bottom: 80px; }
         </div>
         </div>
     </div>
+    <div class="hotel-card selectable" data-category="mykonos" data-total="1153" data-label="Mykonos No5" data-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1104448.jpg" data-nights="3" data-perperson="$231" onclick="selectItem(this, 'mykonos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-no5" data-fav-cat="mykonos" data-fav-label="Mykonos No5 &mdash; Deluxe Room Sea View" data-fav-price="$1,153 total" data-fav-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1104448.jpg" data-fav-url="https://mykonosno5.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1104448.jpg" alt="Mykonos No5" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Mykonos No5 Suites &amp; Villas</h4>
+        <p class="location">Kanalia peninsula (across bay from town) &middot; Sunset views &middot; Found on Places &middot; <a href="https://mykonosno5.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room 1: Deluxe Room Sea View (non-refundable)</div><div class="room-price">$576/3 nights</div></div>
+            <div class="hotel-room"><div class="room-name">Room 2: Deluxe Room Sea View (non-refundable)</div><div class="room-price">$576/3 nights</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$1,152.65</span> <span style="color:#6b7280">2 rooms · 3 nights · incl. all taxes</span></div>
+            <div class="per-person"><strong>$76.84</strong>/person/night &middot; $230.53/person total</div>
+        </div>
+        </div>
+    </div>
+    <div class="hotel-card selectable" data-category="mykonos" data-total="1004" data-label="A Hotel Mykonos" data-photo="" data-nights="3" data-perperson="$201" onclick="selectItem(this, 'mykonos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-ahotel" data-fav-cat="mykonos" data-fav-label="A Hotel Mykonos &mdash; Country Room" data-fav-price="$1,004 total" data-fav-photo="" data-fav-url="https://ahotelmykonos.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-body">
+        <h4>A Hotel Mykonos</h4>
+        <p class="location">Mykonos &middot; Country Room &middot; Breakfast included &middot; <a href="https://ahotelmykonos.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room 1: Country Room (Exclusive Deal)</div><div class="room-price">$502/3 nights</div></div>
+            <div class="hotel-room"><div class="room-name">Room 2: Country Room (Exclusive Deal)</div><div class="room-price">$502/3 nights</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$1,003.81</span> <span style="color:#6b7280">2 rooms · 3 nights · incl. all taxes · breakfast incl.</span></div>
+            <div class="per-person"><strong>$66.92</strong>/person/night &middot; $200.76/person total</div>
+        </div>
+        </div>
+    </div>
+    <div class="hotel-card selectable" data-category="mykonos" data-total="2776" data-label="Ostraco Suites" data-photo="" data-nights="3" data-perperson="$555" onclick="selectItem(this, 'mykonos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-ostraco" data-fav-cat="mykonos" data-fav-label="Ostraco Suites &mdash; Superior Sea View" data-fav-price="$2,776 total" data-fav-photo="" data-fav-url="https://ostraco.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-body">
+        <h4>Ostraco Suites</h4>
+        <p class="location">Near Mykonos Town &middot; Breakfast included &middot; Members rate saves extra $273 &middot; <a href="https://ostraco.reserve-online.net/?checkin=2026-07-17&rooms=2&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room 1: Mykonian Superior Room Sea View (Early Escape B&amp;B)</div><div class="room-price">$1,388/3 nights</div></div>
+            <div class="hotel-room"><div class="room-name">Room 2: Mykonian Superior Room Sea View (Early Escape B&amp;B)</div><div class="room-price">$1,388/3 nights</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$2,776.06</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. all taxes &middot; breakfast incl.</span></div>
+            <div class="per-person"><strong>$185.07</strong>/person/night &middot; $555.21/person total</div>
+        </div>
+        </div>
+    </div>
     <h3 style="margin:25px 0 15px">Airbnb Options</h3>
 
     <div class="listings-grid">
         
-        <div class="listing-card selectable" data-category="mykonos" data-total="695" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" data-nights="2" data-perperson="$69" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="695" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" data-nights="2" data-perperson="$69" data-url="https://www.airbnb.com/rooms/817852363190103242" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-695-0" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$695" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/817852363190103242"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1689,7 +1856,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="753" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" data-nights="2" data-perperson="$75" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="753" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" data-nights="2" data-perperson="$75" data-url="https://www.airbnb.com/rooms/1147101591678302574" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-753-1" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$753" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1147101591678302574"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1704,7 +1872,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="934" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" data-nights="2" data-perperson="$93" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="934" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" data-nights="2" data-perperson="$93" data-url="https://www.airbnb.com/rooms/33204311" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-934-2" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$934" data-fav-photo="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/33204311"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1719,7 +1888,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" data-nights="2" data-perperson="$102" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" data-nights="2" data-perperson="$102" data-url="https://www.airbnb.com/rooms/25614481" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1026-3" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$1,026" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/25614481"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1734,7 +1904,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1034" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" data-nights="2" data-perperson="$103" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1034" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" data-nights="2" data-perperson="$103" data-url="https://www.airbnb.com/rooms/32707518" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1034-4" data-fav-cat="mykonos" data-fav-label="Cycladic home in Mykonos" data-fav-price="$1,034" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/32707518"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1749,7 +1920,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1204" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" data-nights="2" data-perperson="$120" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1204" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" data-nights="2" data-perperson="$120" data-url="https://www.airbnb.com/rooms/1383887026422637154" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1204-5" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$1,204" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1383887026422637154"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1764,7 +1936,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1380" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" data-nights="2" data-perperson="$138" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1380" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" data-nights="2" data-perperson="$138" data-url="https://www.airbnb.com/rooms/1028790826121786908" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1380-6" data-fav-cat="mykonos" data-fav-label="Cycladic home in Mykonos" data-fav-price="$1,380" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1028790826121786908"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1779,7 +1952,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1408" data-label="Home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" data-nights="2" data-perperson="$140" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1408" data-label="Home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" data-nights="2" data-perperson="$140" data-url="https://www.airbnb.com/rooms/35557769" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1408-7" data-fav-cat="mykonos" data-fav-label="Home in Mykonos" data-fav-price="$1,408" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/35557769"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" alt="Home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1794,7 +1968,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1521" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" data-nights="2" data-perperson="$152" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1521" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" data-nights="2" data-perperson="$152" data-url="https://www.airbnb.com/rooms/7660317" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1521-8" data-fav-cat="mykonos" data-fav-label="Cycladic home in Mykonos" data-fav-price="$1,521" data-fav-photo="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/7660317"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1809,7 +1984,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1612" data-label="Apartment in Platýs Gialós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" data-nights="2" data-perperson="$161" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1612" data-label="Apartment in Platýs Gialós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" data-nights="2" data-perperson="$161" data-url="https://www.airbnb.com/rooms/1097706539841323101" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1612-9" data-fav-cat="mykonos" data-fav-label="Apartment in Platýs Gialós" data-fav-price="$1,612" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1097706539841323101"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" alt="Apartment in Platýs Gialós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1824,7 +2000,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1624" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" data-nights="2" data-perperson="$162" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1624" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" data-nights="2" data-perperson="$162" data-url="https://www.airbnb.com/rooms/1653594063142305532" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1624-10" data-fav-cat="mykonos" data-fav-label="Cycladic home in Mykonos" data-fav-price="$1,624" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1653594063142305532"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1839,7 +2016,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1732" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" data-nights="2" data-perperson="$173" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1732" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" data-nights="2" data-perperson="$173" data-url="https://www.airbnb.com/rooms/44550048" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1732-11" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$1,732" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/44550048"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1854,7 +2032,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1760" data-label="Cycladic home in Ornós" data-photo="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" data-nights="2" data-perperson="$176" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1760" data-label="Cycladic home in Ornós" data-photo="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" data-nights="2" data-perperson="$176" data-url="https://www.airbnb.com/rooms/24555346" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1760-12" data-fav-cat="mykonos" data-fav-label="Cycladic home in Ornós" data-fav-price="$1,760" data-fav-photo="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/24555346"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" alt="Cycladic home in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1869,7 +2048,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1852" data-label="Apartment in Ornós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" data-nights="2" data-perperson="$185" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1852" data-label="Apartment in Ornós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" data-nights="2" data-perperson="$185" data-url="https://www.airbnb.com/rooms/53332527" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1852-13" data-fav-cat="mykonos" data-fav-label="Apartment in Ornós" data-fav-price="$1,852" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/53332527"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" alt="Apartment in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1884,7 +2064,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="1968" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" data-nights="2" data-perperson="$196" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1968" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" data-nights="2" data-perperson="$196" data-url="https://www.airbnb.com/rooms/20171340" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-1968-14" data-fav-cat="mykonos" data-fav-label="Cycladic home in Mykonos" data-fav-price="$1,968" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/20171340"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1899,7 +2080,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="2026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" data-nights="2" data-perperson="$202" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" data-nights="2" data-perperson="$202" data-url="https://www.airbnb.com/rooms/31976875" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-2026-15" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$2,026" data-fav-photo="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/31976875"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1914,7 +2096,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="2373" data-label="Home in Ornós" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" data-nights="2" data-perperson="$237" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2373" data-label="Home in Ornós" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" data-nights="2" data-perperson="$237" data-url="https://www.airbnb.com/rooms/41872157" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-2373-16" data-fav-cat="mykonos" data-fav-label="Home in Ornós" data-fav-price="$2,373" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" data-fav-url="https://www.airbnb.com/rooms/41872157"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" alt="Home in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -1929,7 +2112,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="mykonos" data-total="2686" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" data-nights="2" data-perperson="$268" onclick="selectItem(this, 'mykonos')">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2686" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" data-nights="2" data-perperson="$268" data-url="https://www.airbnb.com/rooms/19498191" onclick="selectItem(this, 'mykonos')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="mykonos-2686-17" data-fav-cat="mykonos" data-fav-label="Apartment in Mykonos" data-fav-price="$2,686" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/19498191"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2184,7 +2368,8 @@ body.has-cost-bar { padding-bottom: 80px; }
     <a class="search-link" href="https://www.airbnb.com/s/Athens%2C%20Greece/homes?query=Athens%2C%20Greece&amp;checkin=2026-07-20&amp;checkout=2026-07-21&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Apartment in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" data-nights="1" data-perperson="$26" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Apartment in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" data-nights="1" data-perperson="$26" data-url="https://www.airbnb.com/rooms/1273939145811920099" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-134-0" data-fav-cat="athens" data-fav-label="Apartment in Monastiraki" data-fav-price="$134" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1273939145811920099"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" alt="Apartment in Monastiraki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2199,7 +2384,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" data-nights="1" data-perperson="$26" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" data-nights="1" data-perperson="$26" data-url="https://www.airbnb.com/rooms/51256457" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-134-1" data-fav-cat="athens" data-fav-label="Condo in Athens" data-fav-price="$134" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/51256457"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2214,7 +2400,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="161" data-label="Apartment in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" data-nights="1" data-perperson="$32" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="161" data-label="Apartment in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" data-nights="1" data-perperson="$32" data-url="https://www.airbnb.com/rooms/982589521042598757" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-161-2" data-fav-cat="athens" data-fav-label="Apartment in Exarcheia" data-fav-price="$161" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/982589521042598757"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" alt="Apartment in Exarcheia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2229,7 +2416,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="179" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" data-nights="1" data-perperson="$35" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="179" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" data-nights="1" data-perperson="$35" data-url="https://www.airbnb.com/rooms/23986132" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-179-3" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$179" data-fav-photo="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/23986132"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2244,7 +2432,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="188" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" data-nights="1" data-perperson="$37" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="188" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" data-nights="1" data-perperson="$37" data-url="https://www.airbnb.com/rooms/24449568" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-188-4" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$188" data-fav-photo="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/24449568"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2259,7 +2448,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="191" data-label="Apartment in Thissio" data-photo="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" data-nights="1" data-perperson="$38" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="191" data-label="Apartment in Thissio" data-photo="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" data-nights="1" data-perperson="$38" data-url="https://www.airbnb.com/rooms/24366011" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-191-5" data-fav-cat="athens" data-fav-label="Apartment in Thissio" data-fav-price="$191" data-fav-photo="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/24366011"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" alt="Apartment in Thissio" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2274,7 +2464,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="196" data-label="Apartment in Metaxourgeio" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" data-nights="1" data-perperson="$39" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="196" data-label="Apartment in Metaxourgeio" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" data-nights="1" data-perperson="$39" data-url="https://www.airbnb.com/rooms/18791961" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-196-6" data-fav-cat="athens" data-fav-label="Apartment in Metaxourgeio" data-fav-price="$196" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/18791961"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" alt="Apartment in Metaxourgeio" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2289,7 +2480,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="201" data-label="Apartment in Gazi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" data-nights="1" data-perperson="$40" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="201" data-label="Apartment in Gazi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" data-nights="1" data-perperson="$40" data-url="https://www.airbnb.com/rooms/19758093" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-201-7" data-fav-cat="athens" data-fav-label="Apartment in Gazi" data-fav-price="$201" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/19758093"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" alt="Apartment in Gazi" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2304,7 +2496,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="214" data-label="Condo in Mets" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" data-nights="1" data-perperson="$42" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="214" data-label="Condo in Mets" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" data-nights="1" data-perperson="$42" data-url="https://www.airbnb.com/rooms/52552823" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-214-8" data-fav-cat="athens" data-fav-label="Condo in Mets" data-fav-price="$214" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/52552823"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" alt="Condo in Mets" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2319,7 +2512,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="263" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" data-nights="1" data-perperson="$52" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="263" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" data-nights="1" data-perperson="$52" data-url="https://www.airbnb.com/rooms/22359269" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-263-9" data-fav-cat="athens" data-fav-label="Apartment in Plaka" data-fav-price="$263" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/22359269"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2334,7 +2528,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="319" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" data-nights="1" data-perperson="$63" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="319" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" data-nights="1" data-perperson="$63" data-url="https://www.airbnb.com/rooms/50467116" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-319-10" data-fav-cat="athens" data-fav-label="Apartment in Plaka" data-fav-price="$319" data-fav-photo="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/50467116"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2349,7 +2544,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="322" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" data-nights="1" data-perperson="$64" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="322" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" data-nights="1" data-perperson="$64" data-url="https://www.airbnb.com/rooms/52161410" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-322-11" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$322" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/52161410"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2364,7 +2560,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="360" data-label="Condo in Kerameikos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" data-nights="1" data-perperson="$72" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="360" data-label="Condo in Kerameikos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" data-nights="1" data-perperson="$72" data-url="https://www.airbnb.com/rooms/1577457201045971100" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-360-12" data-fav-cat="athens" data-fav-label="Condo in Kerameikos" data-fav-price="$360" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1577457201045971100"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" alt="Condo in Kerameikos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2379,7 +2576,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="372" data-label="Loft in Koukaki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" data-nights="1" data-perperson="$74" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="372" data-label="Loft in Koukaki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" data-nights="1" data-perperson="$74" data-url="https://www.airbnb.com/rooms/1571613810085707438" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-372-13" data-fav-cat="athens" data-fav-label="Loft in Koukaki" data-fav-price="$372" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1571613810085707438"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" alt="Loft in Koukaki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2394,7 +2592,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="393" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" data-nights="1" data-perperson="$78" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="393" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" data-nights="1" data-perperson="$78" data-url="https://www.airbnb.com/rooms/1130185173023248883" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-393-14" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$393" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1130185173023248883"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2409,7 +2608,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="501" data-label="Condo in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" data-nights="1" data-perperson="$100" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="501" data-label="Condo in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" data-nights="1" data-perperson="$100" data-url="https://www.airbnb.com/rooms/564904740793335873" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-501-15" data-fav-cat="athens" data-fav-label="Condo in Monastiraki" data-fav-price="$501" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/564904740793335873"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" alt="Condo in Monastiraki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2424,7 +2624,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="529" data-label="Apartment in Koukaki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" data-nights="1" data-perperson="$105" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="529" data-label="Apartment in Koukaki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" data-nights="1" data-perperson="$105" data-url="https://www.airbnb.com/rooms/1153401936359103141" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-529-16" data-fav-cat="athens" data-fav-label="Apartment in Koukaki" data-fav-price="$529" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1153401936359103141"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" alt="Apartment in Koukaki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2439,7 +2640,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="538" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" data-nights="1" data-perperson="$107" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="538" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" data-nights="1" data-perperson="$107" data-url="https://www.airbnb.com/rooms/1218027360514018639" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-538-17" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$538" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/1218027360514018639"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2454,7 +2656,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="561" data-label="Apartment in Psyri" data-photo="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" data-nights="1" data-perperson="$112" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="561" data-label="Apartment in Psyri" data-photo="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" data-nights="1" data-perperson="$112" data-url="https://www.airbnb.com/rooms/28634342" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-561-18" data-fav-cat="athens" data-fav-label="Apartment in Psyri" data-fav-price="$561" data-fav-photo="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/28634342"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" alt="Apartment in Psyri" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2469,7 +2672,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="574" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" data-nights="1" data-perperson="$114" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="574" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" data-nights="1" data-perperson="$114" data-url="https://www.airbnb.com/rooms/50132018" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-574-19" data-fav-cat="athens" data-fav-label="Condo in Athens" data-fav-price="$574" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/50132018"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2484,7 +2688,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="627" data-label="Condo in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" data-nights="1" data-perperson="$125" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="627" data-label="Condo in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" data-nights="1" data-perperson="$125" data-url="https://www.airbnb.com/rooms/3036157" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-627-20" data-fav-cat="athens" data-fav-label="Condo in Exarcheia" data-fav-price="$627" data-fav-photo="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/3036157"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" alt="Condo in Exarcheia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2499,7 +2704,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="642" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" data-nights="1" data-perperson="$128" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="642" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" data-nights="1" data-perperson="$128" data-url="https://www.airbnb.com/rooms/23427054" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-642-21" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$642" data-fav-photo="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/23427054"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2514,7 +2720,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="694" data-label="Condo in Plaka" data-photo="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" data-nights="1" data-perperson="$138" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="694" data-label="Condo in Plaka" data-photo="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" data-nights="1" data-perperson="$138" data-url="https://www.airbnb.com/rooms/920813668180190104" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-694-22" data-fav-cat="athens" data-fav-label="Condo in Plaka" data-fav-price="$694" data-fav-photo="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/920813668180190104"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" alt="Condo in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2529,7 +2736,8 @@ body.has-cost-bar { padding-bottom: 80px; }
                 </div>
             </div>
         </div>
-        <div class="listing-card selectable" data-category="athens" data-total="712" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" data-nights="1" data-perperson="$142" onclick="selectItem(this, 'athens')">
+        <div class="listing-card selectable" data-category="athens" data-total="712" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" data-nights="1" data-perperson="$142" data-url="https://www.airbnb.com/rooms/949112878294417606" onclick="selectItem(this, 'athens')">
+            <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="athens-712-23" data-fav-cat="athens" data-fav-label="Apartment in Athens" data-fav-price="$712" data-fav-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" data-fav-url="https://www.airbnb.com/rooms/949112878294417606"></button>
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
@@ -2552,30 +2760,30 @@ body.has-cost-bar { padding-bottom: 80px; }
     <h3 style="margin-bottom:15px">Option A: 7-Day Trip (Jul 14-21)</h3>
     <p style="margin-bottom:10px; color:#6b7280">Milos (3n) &rarr; Mykonos (3n) &rarr; Athens (1n)</p>
     <div class="cost-table"><table>
-        <tr><th>Category</th><th>Airbnb (mid)</th><th>NUMO Hotel</th><th>Pietra e Mare</th></tr>
-        <tr><td>Flight (NYC)</td><td>$1,031</td><td>$1,031</td><td>$1,031</td></tr>
-        <tr><td>Flight (LA)</td><td>$1,123</td><td>$1,123</td><td>$1,123</td></tr>
-        <tr><td>Ferries</td><td>$219</td><td>$219</td><td>$219</td></tr>
-        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td></tr>
-        <tr><td>Mykonos 3n (/5)</td><td>~$360</td><td>$346</td><td>$457</td></tr>
-        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td></tr>
-        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$1,872</strong></td><td><strong>$1,858</strong></td><td><strong>$1,969</strong></td></tr>
-        <tr class="total-row"><td>Per person (LA)</td><td><strong>$1,964</strong></td><td><strong>$1,950</strong></td><td><strong>$2,061</strong></td></tr>
+        <tr><th>Category</th><th>A Hotel ($67/pp/n)</th><th>No5 ($77/pp/n)</th><th>NUMO ($115/pp/n)</th><th>Pietra ($152/pp/n)</th></tr>
+        <tr><td>Flight (NYC)</td><td>$1,031</td><td>$1,031</td><td>$1,031</td><td>$1,031</td></tr>
+        <tr><td>Flight (LA)</td><td>$1,123</td><td>$1,123</td><td>$1,123</td><td>$1,123</td></tr>
+        <tr><td>Ferries</td><td>$219</td><td>$219</td><td>$219</td><td>$219</td></tr>
+        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td><td>$224</td></tr>
+        <tr><td>Mykonos 3n (/5)</td><td>$201</td><td>$231</td><td>$346</td><td>$457</td></tr>
+        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td><td>$38</td></tr>
+        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$1,713</strong></td><td><strong>$1,743</strong></td><td><strong>$1,858</strong></td><td><strong>$1,969</strong></td></tr>
+        <tr class="total-row"><td>Per person (LA)</td><td><strong>$1,805</strong></td><td><strong>$1,835</strong></td><td><strong>$1,950</strong></td><td><strong>$2,061</strong></td></tr>
     </table></div>
 
     <h3 style="margin:30px 0 15px">Option B: 10-Day Trip (Jul 11-21)</h3>
     <p style="margin-bottom:10px; color:#6b7280">Milos (3n) &rarr; Paros (3n) &rarr; Mykonos (3n) &rarr; Athens (1n)</p>
     <div class="cost-table"><table>
-        <tr><th>Category</th><th>Airbnb (mid)</th><th>NUMO Hotel</th><th>Pietra e Mare</th></tr>
-        <tr><td>Flight (NYC)</td><td>$1,142</td><td>$1,142</td><td>$1,142</td></tr>
-        <tr><td>Flight (LA)</td><td>$1,196</td><td>$1,196</td><td>$1,196</td></tr>
-        <tr><td>Ferries</td><td>$235</td><td>$235</td><td>$235</td></tr>
-        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td></tr>
-        <tr><td>Paros 3n (/5)</td><td>$184</td><td>$184</td><td>$184</td></tr>
-        <tr><td>Mykonos 3n (/5)</td><td>~$360</td><td>$346</td><td>$457</td></tr>
-        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td></tr>
-        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$2,183</strong></td><td><strong>$2,169</strong></td><td><strong>$2,280</strong></td></tr>
-        <tr class="total-row"><td>Per person (LA)</td><td><strong>$2,237</strong></td><td><strong>$2,223</strong></td><td><strong>$2,334</strong></td></tr>
+        <tr><th>Category</th><th>A Hotel ($67/pp/n)</th><th>No5 ($77/pp/n)</th><th>NUMO ($115/pp/n)</th><th>Pietra ($152/pp/n)</th></tr>
+        <tr><td>Flight (NYC)</td><td>$1,142</td><td>$1,142</td><td>$1,142</td><td>$1,142</td></tr>
+        <tr><td>Flight (LA)</td><td>$1,196</td><td>$1,196</td><td>$1,196</td><td>$1,196</td></tr>
+        <tr><td>Ferries</td><td>$235</td><td>$235</td><td>$235</td><td>$235</td></tr>
+        <tr><td>Milos 3n (/5)</td><td>$224</td><td>$224</td><td>$224</td><td>$224</td></tr>
+        <tr><td>Paros 3n (/5)</td><td>$184</td><td>$184</td><td>$184</td><td>$184</td></tr>
+        <tr><td>Mykonos 3n (/5)</td><td>$201</td><td>$231</td><td>$346</td><td>$457</td></tr>
+        <tr><td>Athens 1n (/5)</td><td>$38</td><td>$38</td><td>$38</td><td>$38</td></tr>
+        <tr class="total-row"><td>Per person (NYC)</td><td><strong>$2,024</strong></td><td><strong>$2,054</strong></td><td><strong>$2,169</strong></td><td><strong>$2,280</strong></td></tr>
+        <tr class="total-row"><td>Per person (LA)</td><td><strong>$2,078</strong></td><td><strong>$2,108</strong></td><td><strong>$2,223</strong></td><td><strong>$2,334</strong></td></tr>
     </table></div>
 
     <div class="findings">
@@ -2583,11 +2791,17 @@ body.has-cost-bar { padding-bottom: 80px; }
         <ul style="padding-left: 20px">
             <li><strong>7-day saves ~$275-310/person</strong> vs 10-day</li>
             <li><strong>10-day adds Paros</strong> &mdash; cheapest island, only ~$184pp for 3 nights</li>
-            <li><strong>NUMO Mykonos ($346pp/3n)</strong> great value vs Pietra e Mare ($457pp) &mdash; saves $555 for the group</li>
+            <li><strong>A Hotel ($67/pp/n)</strong> cheapest + breakfast, <strong>No5 ($77/pp/n)</strong> great views, <strong>NUMO ($115/pp/n)</strong> boutique eco, <strong>Pietra ($152/pp/n)</strong> premium</li>
             <li><strong>Must be in Mykonos by Jul 19</strong> for Scorpios</li>
             <li><strong>Not included:</strong> food (~$50-100/day), activities, car/ATV rental (~$30-60/day), taxis</li>
         </ul>
     </div>
+</div>
+
+<!-- FAVORITES - appears when you heart items -->
+<div class="favorites-panel" id="favoritesPanel" style="scroll-margin-top:20px">
+    <h3>&#10084; Your Favorites</h3>
+    <div class="fav-list" id="favList"></div>
 </div>
 
 <!-- YOUR SELECTIONS - appears at bottom when you click items -->
@@ -2670,7 +2884,9 @@ function updateSummaryPanel() {
         } else {
             var imgHtml = s.photo ? '<img src="' + s.photo + '" loading="lazy">' : '<div style="height:100px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:0.8em">No photo</div>';
             var nightsLabel = s.nights ? s.nights + 'n' : '';
-            cardsHtml += '<div class="summary-card">' + imgHtml + '<div class="sc-body"><div class="sc-cat">' + catName + (nightsLabel ? ' &middot; ' + nightsLabel : '') + '</div><div class="sc-name">' + s.label + '</div><div class="sc-price">$' + ppCost.toLocaleString() + '/pp</div><div class="sc-sub">$' + s.total.toLocaleString() + ' group</div></div></div>';
+            var nights = parseInt(s.nights) || 1;
+            var ppnCost = Math.round(s.total / (5 * nights));
+            cardsHtml += '<div class="summary-card">' + imgHtml + '<div class="sc-body"><div class="sc-cat">' + catName + (nightsLabel ? ' &middot; ' + nightsLabel : '') + '</div><div class="sc-name">' + s.label + '</div><div class="sc-price">$' + ppnCost.toLocaleString() + '/pp/night</div><div class="sc-sub">$' + s.total.toLocaleString() + ' group total</div></div></div>';
         }
     });
     var hasParos = !!selections.paros;
@@ -2745,6 +2961,147 @@ document.querySelectorAll('.sidebar-nav a').forEach(function(a) {
 // Patch updateSummaryPanel to also update nav
 var _origUpdateSummary = updateSummaryPanel;
 updateSummaryPanel = function() { _origUpdateSummary(); updateNavSelections(); };
+
+// ===== FAVORITES / HEARTS =====
+var favorites = {}; // { id: { cat, label, price, photo, url, btnEl } }
+
+function toggleHeart(btn) {
+    var id = btn.dataset.favId;
+    if (favorites[id]) {
+        delete favorites[id];
+        btn.classList.remove('hearted');
+    } else {
+        // srcEl is the selectable card/row that contains this heart
+        var srcEl = btn.closest('.selectable, .selectable-row');
+        var parentCard = btn.closest('[data-total]');
+        var totalNum = parentCard ? parseInt(parentCard.dataset.total) || 0 : 0;
+        var nights = parentCard ? parseInt(parentCard.dataset.nights) || 1 : 1;
+        var ppn = (btn.dataset.favCat === 'flight') ? '' : ('$' + Math.round(totalNum / (5 * nights)));
+        favorites[id] = {
+            cat: btn.dataset.favCat || '',
+            label: btn.dataset.favLabel || '',
+            price: btn.dataset.favPrice || '',
+            photo: btn.dataset.favPhoto || '',
+            url: btn.dataset.favUrl || '',
+            ppn: ppn,
+            btnEl: btn,
+            srcEl: srcEl
+        };
+        btn.classList.add('hearted');
+    }
+    updateFavoritesPanel();
+}
+
+function toggleRowHeart(span) {
+    var row = span.closest('tr');
+    if (!row) return;
+    var label = row.dataset.label || '';
+    var price = '$' + (row.dataset.total || '0');
+    var id = 'flight-' + label.replace(/[^a-z0-9]/gi, '-');
+    if (favorites[id]) {
+        delete favorites[id];
+        span.classList.remove('hearted');
+        span.innerHTML = '&#9825;';
+    } else {
+        favorites[id] = {
+            cat: 'flight',
+            label: label,
+            price: price,
+            photo: '',
+            url: '',
+            ppn: price + '/person',
+            btnEl: span,
+            srcEl: row
+        };
+        span.classList.add('hearted');
+        span.innerHTML = '&#10084;';
+    }
+    updateFavoritesPanel();
+}
+
+function removeFavorite(id) {
+    if (favorites[id]) {
+        if (favorites[id].btnEl) {
+            favorites[id].btnEl.classList.remove('hearted');
+            if (favorites[id].cat === 'flight') favorites[id].btnEl.innerHTML = '&#9825;';
+        }
+        delete favorites[id];
+    }
+    updateFavoritesPanel();
+}
+
+function selectFromFavorite(id) {
+    var f = favorites[id];
+    if (!f || !f.srcEl) return;
+    selectItem(f.srcEl, f.cat);
+    updateFavoritesPanel();
+}
+
+function updateFavoritesPanel() {
+    var panel = document.getElementById('favoritesPanel');
+    var list = document.getElementById('favList');
+    var navLink = document.getElementById('navFavorites');
+    var keys = Object.keys(favorites);
+
+    if (keys.length === 0) {
+        panel.classList.remove('visible');
+        if (navLink) navLink.style.display = 'none';
+        return;
+    }
+    panel.classList.add('visible');
+    if (navLink) navLink.style.display = 'block';
+
+    var catOrder = ['flight', 'milos', 'paros', 'mykonos', 'athens'];
+    var catNames = { flight: 'Flights', milos: 'Milos', paros: 'Paros', mykonos: 'Mykonos', athens: 'Athens' };
+
+    // Group by category
+    var groups = {};
+    keys.forEach(function(id) {
+        var cat = favorites[id].cat;
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(id);
+    });
+
+    var html = '';
+    catOrder.forEach(function(cat) {
+        if (!groups[cat]) return;
+        var catName = catNames[cat] || cat;
+        html += '<div class="fav-group"><div class="fav-group-title">' + catName + '</div><div class="fav-cards">';
+
+        groups[cat].forEach(function(id) {
+            var f = favorites[id];
+            var isPicked = selections[f.cat] && selections[f.cat].element === f.srcEl;
+            var cardClass = isPicked ? ' is-picked' : '';
+            var btnClass = isPicked ? ' picked' : '';
+            var btnText = isPicked ? '&#10003; Picked' : 'Pick this';
+
+            var imgHtml = f.photo
+                ? '<img src="' + f.photo + '" loading="lazy">'
+                : '<div class="fc-icon">' + (f.cat === 'flight' ? '&#9992;' : '&#127965;') + '</div>';
+            var nameHtml = f.url
+                ? '<a href="' + f.url + '" target="_blank">' + f.label + '</a>'
+                : f.label;
+
+            var ppnHtml = f.ppn ? '<div style="font-size:0.75em;color:#6b7280;margin-bottom:4px">' + f.ppn + '/person/night</div>' : '';
+            html += '<div class="fav-card' + cardClass + '">' +
+                '<span class="heart-corner">&#10084;</span>' +
+                imgHtml +
+                '<div class="fc-body">' +
+                    '<div class="fc-name">' + nameHtml + '</div>' +
+                    '<div class="fc-price">' + f.price + '</div>' +
+                    ppnHtml +
+                    '<div class="fc-actions">' +
+                        '<button class="fc-pick' + btnClass + '" onclick="selectFromFavorite(\'' + id + '\')">' + btnText + '</button>' +
+                        '<button class="fc-remove" onclick="removeFavorite(\'' + id + '\')">&times;</button>' +
+                    '</div>' +
+                '</div></div>';
+        });
+
+        html += '</div></div>';
+    });
+
+    list.innerHTML = html;
+}
 </script>
 
 </body>
