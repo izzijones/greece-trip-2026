@@ -75,14 +75,86 @@ a:hover { text-decoration: underline; }
 .findings { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #86efac; border-radius: 16px; padding: 24px; margin-top: 20px; }
 .findings h3 { color: #059669; margin-bottom: 12px; }
 .findings li { margin-bottom: 8px; }
+/* Selectable items */
+.selectable { cursor: pointer; transition: outline 0.15s, box-shadow 0.15s; }
+.selectable.selected { outline: 3px solid #2563eb; box-shadow: 0 0 0 6px rgba(37,99,235,0.15); }
+.selectable-row { cursor: pointer; }
+.selectable-row:hover td { background: #eef2ff !important; }
+.selectable-row.selected td { background: #dbeafe !important; }
+.select-dot { width: 24px; text-align: center; }
+.select-dot::before { content: ""; display: inline-block; width: 16px; height: 16px; border: 2px solid #d1d5db; border-radius: 50%; vertical-align: middle; }
+.selectable-row.selected .select-dot::before { background: #2563eb; border-color: #2563eb; box-shadow: inset 0 0 0 3px white; }
+
+/* Floating cost bar */
+.cost-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 1000; padding: 12px 20px; display: none; }
+.cost-bar.visible { display: block; }
+.cost-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.cost-bar-selections { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; align-items: center; }
+.cost-bar-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #eef2ff; border-radius: 8px; font-size: 0.8em; color: #1e40af; font-weight: 500; }
+.cost-bar-chip .chip-x { cursor: pointer; color: #9ca3af; margin-left: 2px; font-weight: 700; }
+.cost-bar-chip .chip-x:hover { color: #ef4444; }
+.cost-bar-total { text-align: right; white-space: nowrap; }
+.cost-bar-total .total-amount { font-size: 1.5em; font-weight: 800; color: #059669; }
+.cost-bar-total .total-label { font-size: 0.8em; color: #6b7280; }
+.cost-bar-total .total-pp { font-size: 0.95em; font-weight: 600; color: #1e40af; }
+
+/* Add bottom padding so content isn't hidden behind bar */
+body.has-cost-bar { padding-bottom: 80px; }
+
+/* Sidebar nav */
+.sidebar-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; gap: 4px; }
+.sidebar-nav a { display: block; padding: 8px 14px; background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); font-size: 0.8em; font-weight: 600; color: #4b5563; text-decoration: none; transition: all 0.15s; white-space: nowrap; border: 2px solid transparent; }
+.sidebar-nav a:hover { background: #eef2ff; color: #2563eb; border-color: #bfdbfe; text-decoration: none; }
+.sidebar-nav a.active { background: #2563eb; color: white; border-color: #2563eb; }
+.sidebar-nav .nav-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.sidebar-nav .dot-milos { background: #3b82f6; }
+.sidebar-nav .dot-paros { background: #ec4899; }
+.sidebar-nav .dot-mykonos { background: #6366f1; }
+.sidebar-nav .dot-athens { background: #f59e0b; }
+.sidebar-nav .dot-flights { background: #9ca3af; }
+.sidebar-nav .dot-cost { background: #059669; }
+.sidebar-nav .dot-selections { background: #2563eb; }
+@media (max-width: 1300px) { .sidebar-nav { display: none; } }
+
+/* Summary panel */
+.summary-panel { display: none; background: linear-gradient(135deg, #eff6ff, #f0f9ff); border: 2px solid #bfdbfe; border-radius: 20px; padding: 28px; margin-bottom: 40px; }
+.summary-panel.visible { display: block; }
+.summary-panel h3 { font-size: 1.3em; margin-bottom: 16px; color: #1e40af; }
+.summary-cards { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.summary-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); width: 180px; flex-shrink: 0; }
+.summary-card img { width: 100%; height: 100px; object-fit: cover; }
+.summary-card .sc-body { padding: 10px; }
+.summary-card .sc-cat { font-size: 0.7em; text-transform: uppercase; font-weight: 700; color: #2563eb; letter-spacing: 0.5px; }
+.summary-card .sc-name { font-size: 0.85em; font-weight: 600; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.summary-card .sc-price { font-size: 0.9em; font-weight: 700; color: #059669; }
+.summary-card .sc-sub { font-size: 0.7em; color: #9ca3af; }
+.summary-card.flight-card { background: #f9fafb; }
+.summary-card.flight-card .sc-icon { height: 100px; display: flex; align-items: center; justify-content: center; font-size: 3em; background: linear-gradient(135deg, #dbeafe, #e0e7ff); }
+.summary-totals { display: flex; gap: 24px; align-items: center; padding-top: 16px; border-top: 2px solid #bfdbfe; flex-wrap: wrap; }
+.summary-totals .st-item { text-align: center; }
+.summary-totals .st-label { font-size: 0.8em; color: #6b7280; }
+.summary-totals .st-value { font-size: 1.4em; font-weight: 800; color: #059669; }
+.summary-totals .st-pp { font-size: 1.1em; font-weight: 700; color: #1e40af; }
+
 @media print {
     .hero { background: #1e40af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .listing-card, .section { break-inside: avoid; }
+    .cost-bar { display: none !important; }
 }
 </style>
 </head>
 <body>
 <div class="container">
+
+<nav class="sidebar-nav" id="sidebarNav">
+    <a href="#sec-flights"><span class="nav-dot dot-flights"></span>Flights</a>
+    <a href="#sec-milos"><span class="nav-dot dot-milos"></span>Milos</a>
+    <a href="#sec-paros"><span class="nav-dot dot-paros"></span>Paros</a>
+    <a href="#sec-mykonos"><span class="nav-dot dot-mykonos"></span>Mykonos</a>
+    <a href="#sec-athens"><span class="nav-dot dot-athens"></span>Athens</a>
+    <a href="#sec-cost"><span class="nav-dot dot-cost"></span>Cost Summary</a>
+    <a href="#summaryPanel" id="navSelections" style="display:none"><span class="nav-dot dot-selections"></span>Your Picks</a>
+</nav>
 
 <div class="hero">
     <h1>Greece 2026</h1>
@@ -114,31 +186,28 @@ a:hover { text-decoration: underline; }
 </div>
 
 <!-- FLIGHTS -->
-<div class="section">
+<div class="section" id="sec-flights">
     <div class="section-header"><h2>Flights</h2></div>
     <div class="flight-group">
-        <h3>Option A: Jul 14-21 (7-day)</h3>
+        <h3>Option A: Jul 14-21 (7-day) &mdash; click to select</h3>
         <table>
-            <tr><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
-            <tr><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 45m</td><td class="price-cell">$1,031</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
-            <tr><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,072</td><td></td></tr>
-            <tr><td>NYC (JFK)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $876</td><td></td></tr>
-            <tr style="border-top:2px solid #e5e7eb"><td>LA (LAX)</td><td>United</td><td>1 stop (EWR)</td><td>16h 10m</td><td class="price-cell">$1,123</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
-            <tr><td>LA (LAX)</td><td>Air France</td><td>1 stop (CDG)</td><td>16h 25m</td><td class="price-cell">$1,125</td><td></td></tr>
-            <tr><td>LA (LAX)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $1,103</td><td></td></tr>
+            <tr><th></th><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1031" data-label="Delta Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 45m</td><td class="price-cell">$1,031</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1072" data-label="American Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,072</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1123" data-label="United 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>United</td><td>1 stop (EWR)</td><td>16h 10m</td><td class="price-cell">$1,123</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-14+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1125" data-label="Air France 1-stop LAX (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Air France</td><td>1 stop (CDG)</td><td>16h 25m</td><td class="price-cell">$1,125</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1148" data-label="Norse Atlantic Nonstop JFK (7-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Norse Atlantic</td><td>Nonstop</td><td>9h 5m</td><td class="price-cell">$1,148</td><td></td></tr>
         </table>
     </div>
     <div class="flight-group">
-        <h3>Option B: Jul 11-21 (10-day)</h3>
+        <h3>Option B: Jul 11-21 (10-day) &mdash; click to select</h3>
         <table>
-            <tr><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
-            <tr><td>NYC (JFK)</td><td>Air Serbia</td><td>1 stop (BEG)</td><td>12h 20m</td><td class="price-cell">$989</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
-            <tr><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,142</td><td></td></tr>
-            <tr><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 40m</td><td class="price-cell">$1,501</td><td></td></tr>
-            <tr><td>NYC (JFK)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $911</td><td></td></tr>
-            <tr style="border-top:2px solid #e5e7eb"><td>LA (LAX)</td><td>Delta</td><td>1 stop (ATL)</td><td>17h 20m</td><td class="price-cell">$1,196</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank">Google Flights</a></td></tr>
-            <tr><td>LA (LAX)</td><td>Air Canada</td><td>1 stop (YYZ)</td><td>15h 45m</td><td class="price-cell">$1,199</td><td></td></tr>
-            <tr><td>LA (LAX)</td><td>Cheapest</td><td></td><td></td><td class="price-cell highlight">from $1,126</td><td></td></tr>
+            <tr><th></th><th>Origin</th><th>Airline</th><th>Stops</th><th>Duration</th><th>Price</th><th>Link</th></tr>
+            <tr class="selectable-row" data-category="flight" data-total="989" data-label="Air Serbia 1-stop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Air Serbia</td><td>1 stop (BEG)</td><td>12h 20m</td><td class="price-cell">$989</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+JFK+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1142" data-label="American Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>American</td><td>Nonstop</td><td>9h 35m</td><td class="price-cell">$1,142</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1501" data-label="Delta Nonstop JFK (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>NYC (JFK)</td><td>Delta</td><td>Nonstop</td><td>9h 40m</td><td class="price-cell">$1,501</td><td></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1196" data-label="Delta 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Delta</td><td>1 stop (ATL)</td><td>17h 20m</td><td class="price-cell">$1,196</td><td><a href="https://www.google.com/travel/flights?q=Flights+from+LAX+to+ATH+on+2026-07-11+returning+2026-07-21&curr=USD" target="_blank" onclick="event.stopPropagation()">Search</a></td></tr>
+            <tr class="selectable-row" data-category="flight" data-total="1199" data-label="Air Canada 1-stop LAX (10-day)" onclick="selectItem(this, 'flight')"><td class="select-dot"></td><td>LA (LAX)</td><td>Air Canada</td><td>1 stop (YYZ)</td><td>15h 45m</td><td class="price-cell">$1,199</td><td></td></tr>
         </table>
     </div>
     <p style="color:#9ca3af; font-size:0.8em">Prices scraped from Google Flights on Apr 1, 2026.</p>
@@ -158,7 +227,7 @@ a:hover { text-decoration: underline; }
     <p style="margin-top:10px; color:#6b7280; font-size:0.85em">Book on <a href="https://www.ferryhopper.com" target="_blank">ferryhopper.com</a>. Meltemi winds can cancel high-speed ferries in July.</p>
 </div>
 
-<div class="section">
+<div class="section" id="sec-milos">
     <div class="section-header"><h2>Milos</h2></div>
     <p style="margin-bottom:5px"><strong>Jul 11-14 (Option B) / Jul 14-17 (Option A)</strong></p>
     <p style="margin-bottom:15px; color:#6b7280">Volcanic beaches, Kleftiko boat tours, Sarakiniko moonscape</p>
@@ -395,14 +464,14 @@ a:hover { text-decoration: underline; }
     <a class="search-link" href="https://www.airbnb.com/s/Milos%2C%20Greece/homes?query=Milos%2C%20Greece&amp;checkin=2026-07-11&amp;checkout=2026-07-14&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="473" data-label="Home in Kimolos" data-photo="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" data-nights="3" data-perperson="$31" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" alt="Home in Kimolos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/3474759" target="_blank">Home in Kimolos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/3474759" target="_blank" onclick="event.stopPropagation()">Home in Kimolos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms &middot; 4.98 (82)</p>
                 <div class="listing-prices">
                     <div class="price-main">$473 <span class="price-label">total (3n)</span></div>
@@ -410,14 +479,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="643" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" data-nights="3" data-perperson="$42" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NDQ1ODE4Njg=/original/ddabb028-7500-4365-beb2-f408b2ba3fba.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/44581868" target="_blank">Cycladic home in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/44581868" target="_blank" onclick="event.stopPropagation()">Cycladic home in Milos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.94 (134)</p>
                 <div class="listing-prices">
                     <div class="price-main">$643 <span class="price-label">total (3n)</span></div>
@@ -425,14 +494,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1001" data-label="Home in Kamares" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" data-nights="3" data-perperson="$66" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-33917419/original/6c5e4723-7952-4274-87b8-852dcae03807.jpeg?im_w=720" alt="Home in Kamares" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/33917419" target="_blank">Home in Kamares</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/33917419" target="_blank" onclick="event.stopPropagation()">Home in Kamares</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 2 baths &middot; 4.97 (70)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,001 <span class="price-label">total (3n)</span></div>
@@ -440,14 +509,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1041" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" data-nights="3" data-perperson="$69" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ef29e5e8-1098-4d4a-8a04-71599b0249c6.jpg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/39770387" target="_blank">Home in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/39770387" target="_blank" onclick="event.stopPropagation()">Home in Adamas</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.96 (113)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,041 <span class="price-label">total (3n)</span></div>
@@ -455,14 +524,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1114" data-label="Cycladic home in Ano Petali" data-photo="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/7fbc1554-2c1b-4464-9019-aca56a790bbe.jpg?im_w=720" alt="Cycladic home in Ano Petali" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/18505023" target="_blank">Cycladic home in Ano Petali</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/18505023" target="_blank" onclick="event.stopPropagation()">Cycladic home in Ano Petali</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.95 (91)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,114 <span class="price-label">total (3n)</span></div>
@@ -470,14 +539,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1121" data-label="Home in Trypiti" data-photo="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/a2d3f0bc-7fc4-4b79-813f-aff02fc1cdf4.jpg?im_w=720" alt="Home in Trypiti" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/7228810" target="_blank">Home in Trypiti</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/7228810" target="_blank" onclick="event.stopPropagation()">Home in Trypiti</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.96 (52)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,121 <span class="price-label">total (3n)</span></div>
@@ -485,14 +554,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1148" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" data-nights="3" data-perperson="$76" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3acf9037-6b5e-4301-b101-4d3eea5989e4.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/16107041" target="_blank">Cycladic home in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/16107041" target="_blank" onclick="event.stopPropagation()">Cycladic home in Adamas</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms &middot; 4.85 (52)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,148 <span class="price-label">total (3n)</span></div>
@@ -500,14 +569,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1161" data-label="Cycladic home in Greece" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" data-nights="3" data-perperson="$77" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-619554585499505617/original/4e6e38ec-c2e6-4f7b-99e3-fc8c95ae9518.jpeg?im_w=720" alt="Cycladic home in Greece" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/619554585499505617" target="_blank">Cycladic home in Greece</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/619554585499505617" target="_blank" onclick="event.stopPropagation()">Cycladic home in Greece</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.92 (65)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,161 <span class="price-label">total (3n)</span></div>
@@ -515,14 +584,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1262" data-label="Home in Plaka" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" data-nights="3" data-perperson="$84" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTM1ODc4NjUzNjc1NTg2MzkzNw==/original/07167e79-9222-4e2c-9259-d60fc923e97e.jpeg?im_w=720" alt="Home in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1358786536755863937" target="_blank">Home in Plaka</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1358786536755863937" target="_blank" onclick="event.stopPropagation()">Home in Plaka</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.89 (9)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,262 <span class="price-label">total (3n)</span></div>
@@ -530,14 +599,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1335" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" data-nights="3" data-perperson="$89" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-27426118/original/c2a1c262-137c-4bfb-b6eb-a8c6f5d84b2b.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/27426118" target="_blank">Apartment in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/27426118" target="_blank" onclick="event.stopPropagation()">Apartment in Adamas</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.94 (173)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,335 <span class="price-label">total (3n)</span></div>
@@ -545,14 +614,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1382" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" data-nights="3" data-perperson="$92" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-54109304/original/3b6c3778-34e1-44c1-ae7d-75e7c25ddccf.jpeg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/54109304" target="_blank">Cycladic home in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/54109304" target="_blank" onclick="event.stopPropagation()">Cycladic home in Milos</a></h4>
                 <p class="listing-details">8 guests · 1 bedroom · 7 beds · 1 bath &middot; 4.9 (70)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,382 <span class="price-label">total (3n)</span></div>
@@ -560,14 +629,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1531" data-label="Home in Milos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" data-nights="3" data-perperson="$102" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-842519640722864877/original/d7c02d5e-3f92-4ab2-82ca-7ace936b8e7d.jpeg?im_w=720" alt="Home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/842519640722864877" target="_blank">Home in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/842519640722864877" target="_blank" onclick="event.stopPropagation()">Home in Milos</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 5.0 (16)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,531 <span class="price-label">total (3n)</span></div>
@@ -575,14 +644,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1581" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" data-nights="3" data-perperson="$105" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/262c56d9-47ec-42c9-bd7c-6ccb95366ace.jpg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/2208534" target="_blank">Cycladic home in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/2208534" target="_blank" onclick="event.stopPropagation()">Cycladic home in Adamas</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 5 beds · 1 bath &middot; 4.98 (58)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,581 <span class="price-label">total (3n)</span></div>
@@ -590,14 +659,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1771" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" data-nights="3" data-perperson="$118" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1157088631827872475/original/a7246ec3-7d1d-4e8d-9144-3d0d26ecd7f4.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1157088631827872475" target="_blank">Apartment in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1157088631827872475" target="_blank" onclick="event.stopPropagation()">Apartment in Adamas</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.92 (37)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,771 <span class="price-label">total (3n)</span></div>
@@ -605,14 +674,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="1973" data-label="Apartment in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" data-nights="3" data-perperson="$131" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTUxMTQ3MzM5NjczODgxODgz/original/95cada97-123b-41bc-b569-d755e921c314.jpeg?im_w=720" alt="Apartment in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/951147339673881883" target="_blank">Apartment in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/951147339673881883" target="_blank" onclick="event.stopPropagation()">Apartment in Adamas</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms &middot; 5.0 (24)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,973 <span class="price-label">total (3n)</span></div>
@@ -620,14 +689,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="2122" data-label="Cycladic home in skinopi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" data-nights="3" data-perperson="$141" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-30309428/original/8ca7e909-4730-4687-9774-4a8334eb1862.jpeg?im_w=720" alt="Cycladic home in skinopi" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/30309428" target="_blank">Cycladic home in skinopi</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/30309428" target="_blank" onclick="event.stopPropagation()">Cycladic home in skinopi</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.91 (77)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,122 <span class="price-label">total (3n)</span></div>
@@ -635,14 +704,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="2268" data-label="Cycladic home in Klima" data-photo="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" data-nights="3" data-perperson="$151" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/33e86c52-ed66-4621-ba0b-3353d4fdabc8.jpg?im_w=720" alt="Cycladic home in Klima" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/9058587" target="_blank">Cycladic home in Klima</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/9058587" target="_blank" onclick="event.stopPropagation()">Cycladic home in Klima</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms &middot; 4.92 (145)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,268 <span class="price-label">total (3n)</span></div>
@@ -650,14 +719,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="2418" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" data-nights="3" data-perperson="$161" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-20693576/original/9868ad77-cd59-40de-842e-c949d5127dc7.png?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/20693576" target="_blank">Cycladic home in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/20693576" target="_blank" onclick="event.stopPropagation()">Cycladic home in Milos</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.92 (73)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,418 <span class="price-label">total (3n)</span></div>
@@ -665,14 +734,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="2802" data-label="Cycladic home in Milos" data-photo="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" data-nights="3" data-perperson="$186" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/94228966/4ad7f94b_original.jpg?im_w=720" alt="Cycladic home in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/7425700" target="_blank">Cycladic home in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/7425700" target="_blank" onclick="event.stopPropagation()">Cycladic home in Milos</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 3 baths &middot; 5.0 (90)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,802 <span class="price-label">total (3n)</span></div>
@@ -680,14 +749,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="3288" data-label="Villa in Pachaina" data-photo="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" data-nights="3" data-perperson="$219" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1046667d-e94a-4127-a4ee-d32537ef170b.jpg?im_w=720" alt="Villa in Pachaina" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/24157350" target="_blank">Villa in Pachaina</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/24157350" target="_blank" onclick="event.stopPropagation()">Villa in Pachaina</a></h4>
                 <p class="listing-details">5 guests · 3 bedrooms &middot; 5.0 (69)</p>
                 <div class="listing-prices">
                     <div class="price-main">$3,288 <span class="price-label">total (3n)</span></div>
@@ -695,14 +764,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="3566" data-label="Cycladic home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" data-nights="3" data-perperson="$237" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE0MjY0NzExNDExMTQ0NTgyNg%3D%3D/original/d4c6e39e-a965-4a46-83b5-9f582596a7ab.jpeg?im_w=720" alt="Cycladic home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1142647114111445826" target="_blank">Cycladic home in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1142647114111445826" target="_blank" onclick="event.stopPropagation()">Cycladic home in Adamas</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 5.0 (24)</p>
                 <div class="listing-prices">
                     <div class="price-main">$3,566 <span class="price-label">total (3n)</span></div>
@@ -710,14 +779,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="5036" data-label="Home in Adamas" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" data-nights="3" data-perperson="$335" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzIyNDk2MTM%3D/original/e03be20a-a40e-4af8-8d9c-715ec88afdd5.jpeg?im_w=720" alt="Home in Adamas" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 9</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/32249613" target="_blank">Home in Adamas</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/32249613" target="_blank" onclick="event.stopPropagation()">Home in Adamas</a></h4>
                 <p class="listing-details">9 guests · 3 bedrooms · 5 beds · 3 baths &middot; 4.89 (104)</p>
                 <div class="listing-prices">
                     <div class="price-main">$5,036 <span class="price-label">total (3n)</span></div>
@@ -725,14 +794,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="5501" data-label="Cycladic home in Mandrakia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" data-nights="3" data-perperson="$366" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-39911683/original/ca42b173-59bf-4865-a59d-8a305112ce89.jpeg?im_w=720" alt="Cycladic home in Mandrakia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/39911683" target="_blank">Cycladic home in Mandrakia</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/39911683" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mandrakia</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 4.75 (12)</p>
                 <div class="listing-prices">
                     <div class="price-main">$5,501 <span class="price-label">total (3n)</span></div>
@@ -740,14 +809,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="milos" data-total="7364" data-label="Villa in Milos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" data-nights="3" data-perperson="$490" onclick="selectItem(this, 'milos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1116806982677932689/original/c4944138-610f-4bc3-b8a9-94167188e2c4.png?im_w=720" alt="Villa in Milos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 10</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1116806982677932689" target="_blank">Villa in Milos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1116806982677932689" target="_blank" onclick="event.stopPropagation()">Villa in Milos</a></h4>
                 <p class="listing-details">10 guests · 4 bedrooms · 9 beds · 5 baths &middot; 5.0 (17)</p>
                 <div class="listing-prices">
                     <div class="price-main">$7,364 <span class="price-label">total (3n)</span></div>
@@ -758,7 +827,7 @@ a:hover { text-decoration: underline; }
     </div>
 </div>
 
-<div class="section">
+<div class="section" id="sec-paros">
     <div class="section-header"><h2>Paros</h2></div>
     <p style="margin-bottom:5px"><strong>Jul 14-17 (Option B only)</strong></p>
     <p style="margin-bottom:15px; color:#6b7280">Naoussa harbor, Kolymbithres Beach, day trip to Antiparos</p>
@@ -977,14 +1046,14 @@ a:hover { text-decoration: underline; }
     <a class="search-link" href="https://www.airbnb.com/s/Paros%2C%20Greece/homes?query=Paros%2C%20Greece&amp;checkin=2026-07-14&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="527" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" data-nights="3" data-perperson="$35" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/37736418" target="_blank">Apartment in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/37736418" target="_blank" onclick="event.stopPropagation()">Apartment in Paros</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.98 (42)</p>
                 <div class="listing-prices">
                     <div class="price-main">$527 <span class="price-label">total (3n)</span></div>
@@ -992,14 +1061,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="626" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" data-nights="3" data-perperson="$41" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/eed6a759-8ade-42cc-b6aa-de3787ff6f97.jpg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/41727781" target="_blank">Apartment in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/41727781" target="_blank" onclick="event.stopPropagation()">Apartment in Paros</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.92 (66)</p>
                 <div class="listing-prices">
                     <div class="price-main">$626 <span class="price-label">total (3n)</span></div>
@@ -1007,14 +1076,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="785" data-label="Home in Paralia Parikia" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" data-nights="3" data-perperson="$52" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIwMjE0OTM2NDAxMDg3Nzc5Mw==/original/d11c500b-29e6-4dbe-8bc8-ef1c67a2c9f9.jpeg?im_w=720" alt="Home in Paralia Parikia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1202149364010877793" target="_blank">Home in Paralia Parikia</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1202149364010877793" target="_blank" onclick="event.stopPropagation()">Home in Paralia Parikia</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 2 baths &middot; 4.92 (12)</p>
                 <div class="listing-prices">
                     <div class="price-main">$785 <span class="price-label">total (3n)</span></div>
@@ -1022,14 +1091,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="921" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" data-nights="3" data-perperson="$61" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/50d07319-f97c-4db0-b008-e275409257b5.jpg?im_w=720" alt="Home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/13932692" target="_blank">Home in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/13932692" target="_blank" onclick="event.stopPropagation()">Home in Paros</a></h4>
                 <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.93 (212)</p>
                 <div class="listing-prices">
                     <div class="price-main">$921 <span class="price-label">total (3n)</span></div>
@@ -1037,14 +1106,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1006" data-label="Guest favorite" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" data-nights="3" data-perperson="$67" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-962194955469183310/original/8608f34f-36f6-4ea0-82ba-6522eff03d6f.jpeg?im_w=720" alt="Guest favorite" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/962194955469183310" target="_blank">Guest favorite</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/962194955469183310" target="_blank" onclick="event.stopPropagation()">Guest favorite</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.97 (30)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,006 <span class="price-label">total (3n)</span></div>
@@ -1052,14 +1121,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1121" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" data-nights="3" data-perperson="$74" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ce395fb1-ef0b-4c7e-ad91-06d95886203d.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/738757" target="_blank">Cycladic home in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/738757" target="_blank" onclick="event.stopPropagation()">Cycladic home in Paros</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 2 baths &middot; 5.0 (59)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,121 <span class="price-label">total (3n)</span></div>
@@ -1067,14 +1136,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1201" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" data-nights="3" data-perperson="$80" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/326741a6-49f6-495c-934e-3c387ad1b74b.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/35606588" target="_blank">Cycladic home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/35606588" target="_blank" onclick="event.stopPropagation()">Cycladic home in Naousa</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms &middot; 4.93 (98)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,201 <span class="price-label">total (3n)</span></div>
@@ -1082,14 +1151,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1249" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" data-nights="3" data-perperson="$83" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-16807309/original/74994d08-a321-4622-b78f-4a3ab948b949.jpeg?im_w=720" alt="Apartment in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/16807309" target="_blank">Apartment in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/16807309" target="_blank" onclick="event.stopPropagation()">Apartment in Paros</a></h4>
                 <p class="listing-details">8 guests · 3 bedrooms · 6 beds · 2 baths &middot; 4.89 (107)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,249 <span class="price-label">total (3n)</span></div>
@@ -1097,14 +1166,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1401" data-label="Home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" data-nights="3" data-perperson="$93" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1134104221241861199/original/a419dbd5-33cc-4839-9942-c782964506d3.jpeg?im_w=720" alt="Home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1134104221241861199" target="_blank">Home in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1134104221241861199" target="_blank" onclick="event.stopPropagation()">Home in Paros</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.92 (24)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,401 <span class="price-label">total (3n)</span></div>
@@ -1112,14 +1181,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1407" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" data-nights="3" data-perperson="$93" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ee255e9a-7667-41a0-b94e-469386c1f016.jpg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/35000888" target="_blank">Cycladic home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/35000888" target="_blank" onclick="event.stopPropagation()">Cycladic home in Naousa</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.9 (69)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,407 <span class="price-label">total (3n)</span></div>
@@ -1127,14 +1196,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1494" data-label="Cycladic home in Krotiri" data-photo="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" data-nights="3" data-perperson="$99" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/131c7c66-6dc6-47cf-a713-a6e2e724fb1d.jpg?im_w=720" alt="Cycladic home in Krotiri" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/14293623" target="_blank">Cycladic home in Krotiri</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/14293623" target="_blank" onclick="event.stopPropagation()">Cycladic home in Krotiri</a></h4>
                 <p class="listing-details">6 guests &middot; 5.0 (96)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,494 <span class="price-label">total (3n)</span></div>
@@ -1142,14 +1211,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="1778" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" data-nights="3" data-perperson="$118" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-904300360982905938/original/166a4928-c509-4abb-b517-4bf96404e56d.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/904300360982905938" target="_blank">Apartment in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/904300360982905938" target="_blank" onclick="event.stopPropagation()">Apartment in Naousa</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.9 (21)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,778 <span class="price-label">total (3n)</span></div>
@@ -1157,14 +1226,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2091" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" data-nights="3" data-perperson="$139" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-19615361/original/dd744bff-e813-45d8-b9f7-862930f26270.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/19615361" target="_blank">Apartment in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/19615361" target="_blank" onclick="event.stopPropagation()">Apartment in Naousa</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms &middot; 4.95 (109)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,091 <span class="price-label">total (3n)</span></div>
@@ -1172,14 +1241,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2148" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" data-nights="3" data-perperson="$143" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/ad3cd3e9-7860-4170-88e5-834d85c1f239.jpg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/18221067" target="_blank">Cycladic home in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/18221067" target="_blank" onclick="event.stopPropagation()">Cycladic home in Paros</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.93 (58)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,148 <span class="price-label">total (3n)</span></div>
@@ -1187,14 +1256,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2215" data-label="Villa in Paros" data-photo="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" data-nights="3" data-perperson="$147" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/39ab6825-c771-45c3-851a-ba54a84db721.jpg?im_w=720" alt="Villa in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/24056067" target="_blank">Villa in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/24056067" target="_blank" onclick="event.stopPropagation()">Villa in Paros</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 5.0 (63)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,215 <span class="price-label">total (3n)</span></div>
@@ -1202,14 +1271,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2322" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" data-nights="3" data-perperson="$154" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE3MzU5MTc0NDgwMjM1MjI2NQ==/original/8f699cb3-f909-426f-bf6b-7fbae5fdd3e9.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1173591744802352265" target="_blank">Cycladic home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1173591744802352265" target="_blank" onclick="event.stopPropagation()">Cycladic home in Naousa</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 6 beds · 2 baths &middot; 4.96 (24)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,322 <span class="price-label">total (3n)</span></div>
@@ -1217,14 +1286,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2338" data-label="Home in Naousa" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" data-nights="3" data-perperson="$155" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1288288209708996463/original/c3b0ae89-f564-4552-96bf-979c5eb70cfc.jpeg?im_w=720" alt="Home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1288288209708996463" target="_blank">Home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1288288209708996463" target="_blank" onclick="event.stopPropagation()">Home in Naousa</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms </p>
                 <div class="listing-prices">
                     <div class="price-main">$2,338 <span class="price-label">total (3n)</span></div>
@@ -1232,14 +1301,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2442" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" data-nights="3" data-perperson="$162" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-26591774/original/3bd3453e-5a76-47d0-ad23-460511616243.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/26591774" target="_blank">Cycladic home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/26591774" target="_blank" onclick="event.stopPropagation()">Cycladic home in Naousa</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 6 beds · 2 baths &middot; 5.0 (33)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,442 <span class="price-label">total (3n)</span></div>
@@ -1247,14 +1316,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2507" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" data-nights="3" data-perperson="$167" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1625619624238713203/original/f2eda2f0-537a-4fcb-a8e0-0b9a98e768a4.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1625619624238713203" target="_blank">Apartment in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1625619624238713203" target="_blank" onclick="event.stopPropagation()">Apartment in Naousa</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths </p>
                 <div class="listing-prices">
                     <div class="price-main">$2,507 <span class="price-label">total (3n)</span></div>
@@ -1262,14 +1331,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2663" data-label="Cycladic home in Paros" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" data-nights="3" data-perperson="$177" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-936040153831515155/original/7bbf9a9f-a257-4b06-b3d2-70c14162cc83.jpeg?im_w=720" alt="Cycladic home in Paros" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/936040153831515155" target="_blank">Cycladic home in Paros</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/936040153831515155" target="_blank" onclick="event.stopPropagation()">Cycladic home in Paros</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms &middot; 5.0 (33)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,663 <span class="price-label">total (3n)</span></div>
@@ -1277,14 +1346,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="2778" data-label="Superhost" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" data-nights="3" data-perperson="$185" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50257949/original/36ec9174-ce31-466e-8906-8e20e0951123.jpeg?im_w=720" alt="Superhost" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/50257949" target="_blank">Superhost</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/50257949" target="_blank" onclick="event.stopPropagation()">Superhost</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 3 baths &middot; 4.85 (60)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,778 <span class="price-label">total (3n)</span></div>
@@ -1292,14 +1361,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="3299" data-label="Cycladic home in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" data-nights="3" data-perperson="$219" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA1MDgxMTExNjk4MTY3NzYwOA%3D%3D/original/27bfaf6c-8f16-4e3f-a19e-02b22063488a.jpeg?im_w=720" alt="Cycladic home in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1050811116981677608" target="_blank">Cycladic home in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1050811116981677608" target="_blank" onclick="event.stopPropagation()">Cycladic home in Naousa</a></h4>
                 <p class="listing-details">8 guests · 4 bedrooms · 6 beds · 4 baths &middot; 5.0 (18)</p>
                 <div class="listing-prices">
                     <div class="price-main">$3,299 <span class="price-label">total (3n)</span></div>
@@ -1307,14 +1376,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="3929" data-label="Apartment in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" data-nights="3" data-perperson="$261" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTE5OTI3MDYwMTU4NTE0MTYyMg%3D%3D/original/237b0309-539d-434c-b1f7-550431a313d7.jpeg?im_w=720" alt="Apartment in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1199270601585141622" target="_blank">Apartment in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1199270601585141622" target="_blank" onclick="event.stopPropagation()">Apartment in Naousa</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 4 baths &middot; 4.89 (19)</p>
                 <div class="listing-prices">
                     <div class="price-main">$3,929 <span class="price-label">total (3n)</span></div>
@@ -1322,14 +1391,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="paros" data-total="4572" data-label="Villa in Naousa" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" data-nights="3" data-perperson="$304" onclick="selectItem(this, 'paros')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1608689961131367921/original/be64c0d1-118c-46ed-95b2-b316cdace912.jpeg?im_w=720" alt="Villa in Naousa" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1608689961131367921" target="_blank">Villa in Naousa</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1608689961131367921" target="_blank" onclick="event.stopPropagation()">Villa in Naousa</a></h4>
                 <p class="listing-details">8 guests · 5 bedrooms </p>
                 <div class="listing-prices">
                     <div class="price-main">$4,572 <span class="price-label">total (3n)</span></div>
@@ -1340,7 +1409,7 @@ a:hover { text-decoration: underline; }
     </div>
 </div>
 
-<div class="section">
+<div class="section" id="sec-mykonos">
     <div class="section-header"><h2>Mykonos</h2></div>
     <p style="margin-bottom:5px"><strong>Jul 17-20 (both options, 3 nights)</strong></p>
     <p style="margin-bottom:15px; color:#6b7280">Little Venice, Scorpios (Jul 19), beach clubs, nightlife</p>
@@ -1539,8 +1608,8 @@ a:hover { text-decoration: underline; }
         }
     </script>
     <a class="search-link" href="https://www.airbnb.com/s/Mykonos%2C%20Greece/homes?query=Mykonos%2C%20Greece&amp;checkin=2026-07-15&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
-    <h3 style="margin:25px 0 15px">Hotels (confirmed pricing, Jul 17-20, 3 nights, 5 people)</h3>
-    <div class="hotel-card">
+    <h3 style="margin:25px 0 15px">Hotels (confirmed pricing, Jul 17-20, 3 nights, 5 people) &mdash; click to select</h3>
+    <div class="hotel-card selectable" data-category="mykonos" data-total="1729" data-label="NUMO Mykonos" data-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" data-nights="3" data-perperson="$346" onclick="selectItem(this, 'mykonos')">
         <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1492608.jpg" alt="NUMO Mykonos" loading="lazy"></div>
         <div class="hotel-body">
         <h4>NUMO Mykonos Boutique Resort</h4>
@@ -1555,7 +1624,7 @@ a:hover { text-decoration: underline; }
         </div>
         </div>
     </div>
-    <div class="hotel-card">
+    <div class="hotel-card selectable" data-category="mykonos" data-total="2284" data-label="Pietra e Mare" data-photo="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" data-nights="3" data-perperson="$457" onclick="selectItem(this, 'mykonos')">
         <div class="hotel-photo"><img src="https://static.prod.r53.tablethotels.com/media/hotels/slideshow_images_staged/large/1072082.jpg" alt="Pietra e Mare" loading="lazy"></div>
         <div class="hotel-body">
         <h4>Pietra e Mare</h4>
@@ -1574,14 +1643,14 @@ a:hover { text-decoration: underline; }
 
     <div class="listings-grid">
         
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="695" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" data-nights="2" data-perperson="$69" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-817852363190103242/original/cd190b96-0999-417f-bd52-aaf9d233adff.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/817852363190103242" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/817852363190103242" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 1 bedroom · 4 beds · 1 bath &middot; 4.83 (47)</p>
                 <div class="listing-prices">
                     <div class="price-main">$695 <span class="price-label">total (2n)</span></div>
@@ -1589,14 +1658,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="753" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" data-nights="2" data-perperson="$75" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1147101591678302574/original/40d43680-68b1-4baa-8bad-7fa3ad9aa401.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1147101591678302574" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1147101591678302574" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 1 bedroom · 2 beds · 2 baths &middot; 4.85 (27)</p>
                 <div class="listing-prices">
                     <div class="price-main">$753 <span class="price-label">total (2n)</span></div>
@@ -1604,14 +1673,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="934" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" data-nights="2" data-perperson="$93" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/6aedbb4b-4400-4b27-9bd3-2323ae58c5c2.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/33204311" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/33204311" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.89 (65)</p>
                 <div class="listing-prices">
                     <div class="price-main">$934 <span class="price-label">total (2n)</span></div>
@@ -1619,14 +1688,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" data-nights="2" data-perperson="$102" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-25614481/original/2520c29f-c5aa-4009-8b2b-c3266028e888.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/25614481" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/25614481" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">7 guests · 2 bedrooms · 6 beds · 2 baths &middot; 5.0 (11)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,026 <span class="price-label">total (2n)</span></div>
@@ -1634,14 +1703,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1034" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" data-nights="2" data-perperson="$103" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32707518/original/60e98c4a-a3b6-41ff-ad68-d0240184e14e.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/32707518" target="_blank">Cycladic home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/32707518" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.86 (88)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,034 <span class="price-label">total (2n)</span></div>
@@ -1649,14 +1718,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1204" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" data-nights="2" data-perperson="$120" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1383887026422637154/original/c434c78f-3e74-4945-8fba-3ad7b76eeb0c.png?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1383887026422637154" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1383887026422637154" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.95 (19)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,204 <span class="price-label">total (2n)</span></div>
@@ -1664,14 +1733,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1380" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" data-nights="2" data-perperson="$138" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1028790826121786908/original/0d12f453-f7b6-4c20-93b3-ff825b99c05f.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1028790826121786908" target="_blank">Cycladic home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1028790826121786908" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 1 bedroom · 5 beds · 1 bath &middot; 4.77 (52)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,380 <span class="price-label">total (2n)</span></div>
@@ -1679,14 +1748,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1408" data-label="Home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" data-nights="2" data-perperson="$140" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MzU1NTc3Njk%3D/original/b90be15f-c009-4508-9c72-e3e123cdc11b.jpeg?im_w=720" alt="Home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/35557769" target="_blank">Home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/35557769" target="_blank" onclick="event.stopPropagation()">Home in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 5 beds · 2 baths &middot; 4.88 (65)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,408 <span class="price-label">total (2n)</span></div>
@@ -1694,14 +1763,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1521" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" data-nights="2" data-perperson="$152" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/e27b8063-ba11-4fc1-9480-af81890fbccb.jpg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/7660317" target="_blank">Cycladic home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/7660317" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mykonos</a></h4>
                 <p class="listing-details">6 guests &middot; 4.75 (97)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,521 <span class="price-label">total (2n)</span></div>
@@ -1709,14 +1778,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1612" data-label="Apartment in Platýs Gialós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" data-nights="2" data-perperson="$161" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1097706539841323101/original/083ddc5f-a1bc-4895-adb4-05781a76c5d5.jpeg?im_w=720" alt="Apartment in Platýs Gialós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1097706539841323101" target="_blank">Apartment in Platýs Gialós</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1097706539841323101" target="_blank" onclick="event.stopPropagation()">Apartment in Platýs Gialós</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.89 (47)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,612 <span class="price-label">total (2n)</span></div>
@@ -1724,14 +1793,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1624" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" data-nights="2" data-perperson="$162" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1653594063142305532/original/758c29ea-1ed3-47af-a67e-87e7edb78685.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1653594063142305532" target="_blank">Cycladic home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1653594063142305532" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths </p>
                 <div class="listing-prices">
                     <div class="price-main">$1,624 <span class="price-label">total (2n)</span></div>
@@ -1739,14 +1808,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1732" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" data-nights="2" data-perperson="$173" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-44550048/original/dbc82ebf-5393-42aa-aef1-8087012d5c84.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/44550048" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/44550048" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">7 guests · 2 bedrooms · 4 beds · 2 baths &middot; 4.97 (74)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,732 <span class="price-label">total (2n)</span></div>
@@ -1754,14 +1823,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1760" data-label="Cycladic home in Ornós" data-photo="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" data-nights="2" data-perperson="$176" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/1925d6b6-0417-48be-9b98-8cdb886c9622.jpg?im_w=720" alt="Cycladic home in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/24555346" target="_blank">Cycladic home in Ornós</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/24555346" target="_blank" onclick="event.stopPropagation()">Cycladic home in Ornós</a></h4>
                 <p class="listing-details">8 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.9 (84)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,760 <span class="price-label">total (2n)</span></div>
@@ -1769,14 +1838,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1852" data-label="Apartment in Ornós" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" data-nights="2" data-perperson="$185" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-53332527/original/ebcdae0c-dc97-4c90-a681-1d8c5c02152b.jpeg?im_w=720" alt="Apartment in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/53332527" target="_blank">Apartment in Ornós</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/53332527" target="_blank" onclick="event.stopPropagation()">Apartment in Ornós</a></h4>
                 <p class="listing-details">5 guests &middot; 4.88 (33)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,852 <span class="price-label">total (2n)</span></div>
@@ -1784,14 +1853,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="1968" data-label="Cycladic home in Mykonos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" data-nights="2" data-perperson="$196" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MjAxNzEzNDA%3D/original/79324230-0cfc-4cce-874b-ff062f81f27a.jpeg?im_w=720" alt="Cycladic home in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/20171340" target="_blank">Cycladic home in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/20171340" target="_blank" onclick="event.stopPropagation()">Cycladic home in Mykonos</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.98 (97)</p>
                 <div class="listing-prices">
                     <div class="price-main">$1,968 <span class="price-label">total (2n)</span></div>
@@ -1799,14 +1868,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2026" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" data-nights="2" data-perperson="$202" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3bd6d721-e262-4ca0-b3d5-808386e25cf9.jpg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/31976875" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/31976875" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.99 (202)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,026 <span class="price-label">total (2n)</span></div>
@@ -1814,14 +1883,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2373" data-label="Home in Ornós" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" data-nights="2" data-perperson="$237" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-41872157/original/99c0a70a-f2ae-4694-ade2-b7f825ab0d5e.png?im_w=720" alt="Home in Ornós" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/41872157" target="_blank">Home in Ornós</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/41872157" target="_blank" onclick="event.stopPropagation()">Home in Ornós</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.95 (213)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,373 <span class="price-label">total (2n)</span></div>
@@ -1829,14 +1898,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="mykonos" data-total="2686" data-label="Apartment in Mykonos" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" data-nights="2" data-perperson="$268" onclick="selectItem(this, 'mykonos')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19498191/original/b0188c73-f99c-4361-9641-b1fd423b7dc4.jpeg?im_w=720" alt="Apartment in Mykonos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/19498191" target="_blank">Apartment in Mykonos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/19498191" target="_blank" onclick="event.stopPropagation()">Apartment in Mykonos</a></h4>
                 <p class="listing-details">6 guests &middot; 4.94 (166)</p>
                 <div class="listing-prices">
                     <div class="price-main">$2,686 <span class="price-label">total (2n)</span></div>
@@ -1847,7 +1916,7 @@ a:hover { text-decoration: underline; }
     </div>
 </div>
 
-<div class="section">
+<div class="section" id="sec-athens">
     <div class="section-header"><h2>Athens</h2></div>
     <p style="margin-bottom:5px"><strong>Jul 20-21 (both options)</strong></p>
     <p style="margin-bottom:15px; color:#6b7280">Last night, dinner in Plaka/Psyrri, fly out Jul 21</p>
@@ -2084,14 +2153,14 @@ a:hover { text-decoration: underline; }
     <a class="search-link" href="https://www.airbnb.com/s/Athens%2C%20Greece/homes?query=Athens%2C%20Greece&amp;checkin=2026-07-20&amp;checkout=2026-07-21&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
     <div class="listings-grid">
         
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Apartment in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" data-nights="1" data-perperson="$26" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTI3MzkzOTE0NTgxMTkyMDA5OQ%3D%3D/original/f40e7795-836a-491f-af5b-42a91de67cad.jpeg?im_w=720" alt="Apartment in Monastiraki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1273939145811920099" target="_blank">Apartment in Monastiraki</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1273939145811920099" target="_blank" onclick="event.stopPropagation()">Apartment in Monastiraki</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.8 (35)</p>
                 <div class="listing-prices">
                     <div class="price-main">$134 <span class="price-label">total (1n)</span></div>
@@ -2099,14 +2168,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="134" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" data-nights="1" data-perperson="$26" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-51256457/original/aab03d3b-f41b-4399-b8a9-f48c2d13095f.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/51256457" target="_blank">Condo in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/51256457" target="_blank" onclick="event.stopPropagation()">Condo in Athens</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.71 (277)</p>
                 <div class="listing-prices">
                     <div class="price-main">$134 <span class="price-label">total (1n)</span></div>
@@ -2114,14 +2183,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="161" data-label="Apartment in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" data-nights="1" data-perperson="$32" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-982578510985418167/original/707ec919-5744-436d-8b2f-fe961bc37d5f.jpeg?im_w=720" alt="Apartment in Exarcheia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/982589521042598757" target="_blank">Apartment in Exarcheia</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/982589521042598757" target="_blank" onclick="event.stopPropagation()">Apartment in Exarcheia</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.91 (187)</p>
                 <div class="listing-prices">
                     <div class="price-main">$161 <span class="price-label">total (1n)</span></div>
@@ -2129,14 +2198,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="179" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" data-nights="1" data-perperson="$35" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d9597583-57e8-4e2f-970d-22da012c0c5b.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/23986132" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/23986132" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.9 (560)</p>
                 <div class="listing-prices">
                     <div class="price-main">$179 <span class="price-label">total (1n)</span></div>
@@ -2144,14 +2213,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="188" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" data-nights="1" data-perperson="$37" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d8e04e22-6464-4370-a166-83e50d1507b0.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/24449568" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/24449568" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">5 guests · 1 bedroom · 3 beds · 1 bath &middot; 4.92 (529)</p>
                 <div class="listing-prices">
                     <div class="price-main">$188 <span class="price-label">total (1n)</span></div>
@@ -2159,14 +2228,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="191" data-label="Apartment in Thissio" data-photo="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" data-nights="1" data-perperson="$38" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/c40f7323-8ed8-4287-aa29-0191bd4668e6.jpg?im_w=720" alt="Apartment in Thissio" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/24366011" target="_blank">Apartment in Thissio</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/24366011" target="_blank" onclick="event.stopPropagation()">Apartment in Thissio</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.89 (567)</p>
                 <div class="listing-prices">
                     <div class="price-main">$191 <span class="price-label">total (1n)</span></div>
@@ -2174,14 +2243,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="196" data-label="Apartment in Metaxourgeio" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" data-nights="1" data-perperson="$39" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-18791961/original/acdbaa4b-8001-4929-8031-f1864e1175e3.jpeg?im_w=720" alt="Apartment in Metaxourgeio" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/18791961" target="_blank">Apartment in Metaxourgeio</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/18791961" target="_blank" onclick="event.stopPropagation()">Apartment in Metaxourgeio</a></h4>
                 <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.8 (409)</p>
                 <div class="listing-prices">
                     <div class="price-main">$196 <span class="price-label">total (1n)</span></div>
@@ -2189,14 +2258,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="201" data-label="Apartment in Gazi" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" data-nights="1" data-perperson="$40" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-19758093/original/90c9b994-bca5-4740-a323-01e88cc38700.jpeg?im_w=720" alt="Apartment in Gazi" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#22c55e">Budget</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/19758093" target="_blank">Apartment in Gazi</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/19758093" target="_blank" onclick="event.stopPropagation()">Apartment in Gazi</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 1 bath &middot; 4.83 (458)</p>
                 <div class="listing-prices">
                     <div class="price-main">$201 <span class="price-label">total (1n)</span></div>
@@ -2204,14 +2273,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="214" data-label="Condo in Mets" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" data-nights="1" data-perperson="$42" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-32063023/original/aa30a027-8f84-401a-8339-c20fef5a6945.jpeg?im_w=720" alt="Condo in Mets" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/52552823" target="_blank">Condo in Mets</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/52552823" target="_blank" onclick="event.stopPropagation()">Condo in Mets</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.89 (339)</p>
                 <div class="listing-prices">
                     <div class="price-main">$214 <span class="price-label">total (1n)</span></div>
@@ -2219,14 +2288,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="263" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" data-nights="1" data-perperson="$52" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-22359269/original/1818f3d9-927f-45c5-96f2-a855ab5db320.jpeg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/22359269" target="_blank">Apartment in Plaka</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/22359269" target="_blank" onclick="event.stopPropagation()">Apartment in Plaka</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 2 beds · 1 bath &middot; 4.9 (684)</p>
                 <div class="listing-prices">
                     <div class="price-main">$263 <span class="price-label">total (1n)</span></div>
@@ -2234,14 +2303,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="319" data-label="Apartment in Plaka" data-photo="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" data-nights="1" data-perperson="$63" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/9bbcbfe4-3194-490c-8253-6babf644be14.jpg?im_w=720" alt="Apartment in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/50467116" target="_blank">Apartment in Plaka</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/50467116" target="_blank" onclick="event.stopPropagation()">Apartment in Plaka</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 3 beds · 1 bath &middot; 4.89 (190)</p>
                 <div class="listing-prices">
                     <div class="price-main">$319 <span class="price-label">total (1n)</span></div>
@@ -2249,14 +2318,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="322" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" data-nights="1" data-perperson="$64" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-52161410/original/b5cc9009-f85c-46bc-9e6d-be795eb8fdb8.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/52161410" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/52161410" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms &middot; 4.87 (97)</p>
                 <div class="listing-prices">
                     <div class="price-main">$322 <span class="price-label">total (1n)</span></div>
@@ -2264,14 +2333,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="360" data-label="Condo in Kerameikos" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" data-nights="1" data-perperson="$72" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1577457201045971100/original/95c254fd-b24c-4a79-9706-d0059a4e2329.jpeg?im_w=720" alt="Condo in Kerameikos" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1577457201045971100" target="_blank">Condo in Kerameikos</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1577457201045971100" target="_blank" onclick="event.stopPropagation()">Condo in Kerameikos</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 3 beds · 2 baths &middot; 5.0 (9)</p>
                 <div class="listing-prices">
                     <div class="price-main">$360 <span class="price-label">total (1n)</span></div>
@@ -2279,14 +2348,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="372" data-label="Loft in Koukaki" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" data-nights="1" data-perperson="$74" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-1571613810085707438/original/b046b472-fcd8-4aed-b54a-9f52672f74cd.jpeg?im_w=720" alt="Loft in Koukaki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 8</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1571613810085707438" target="_blank">Loft in Koukaki</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1571613810085707438" target="_blank" onclick="event.stopPropagation()">Loft in Koukaki</a></h4>
                 <p class="listing-details">8 guests · 3 bedrooms · 3 beds · 3 baths &middot; 5.0 (12)</p>
                 <div class="listing-prices">
                     <div class="price-main">$372 <span class="price-label">total (1n)</span></div>
@@ -2294,14 +2363,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="393" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" data-nights="1" data-perperson="$78" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1130185173023248883/original/b8ded368-6a88-447e-9485-a1f862f06872.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1130185173023248883" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1130185173023248883" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.96 (159)</p>
                 <div class="listing-prices">
                     <div class="price-main">$393 <span class="price-label">total (1n)</span></div>
@@ -2309,14 +2378,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="501" data-label="Condo in Monastiraki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" data-nights="1" data-perperson="$100" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-564904740793335873/original/ac4f9fcd-b9ac-4407-8d34-647b163bda11.jpeg?im_w=720" alt="Condo in Monastiraki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#3b82f6">Mid-Range</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/564904740793335873" target="_blank">Condo in Monastiraki</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/564904740793335873" target="_blank" onclick="event.stopPropagation()">Condo in Monastiraki</a></h4>
                 <p class="listing-details">6 guests · 2 bedrooms · 3 beds · 2 baths &middot; 4.92 (356)</p>
                 <div class="listing-prices">
                     <div class="price-main">$501 <span class="price-label">total (1n)</span></div>
@@ -2324,14 +2393,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="529" data-label="Apartment in Koukaki" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" data-nights="1" data-perperson="$105" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-1153401936359103141/original/867cbbd1-73cc-421a-9fdc-8d5e846d3990.jpeg?im_w=720" alt="Apartment in Koukaki" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1153401936359103141" target="_blank">Apartment in Koukaki</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1153401936359103141" target="_blank" onclick="event.stopPropagation()">Apartment in Koukaki</a></h4>
                 <p class="listing-details">5 guests · 3 bedrooms &middot; 4.93 (130)</p>
                 <div class="listing-prices">
                     <div class="price-main">$529 <span class="price-label">total (1n)</span></div>
@@ -2339,14 +2408,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="538" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" data-nights="1" data-perperson="$107" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTIxODAyNzM2MDUxNDAxODYzOQ%3D%3D/original/9dea996e-fb17-45a3-be9b-94526a695ef0.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/1218027360514018639" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/1218027360514018639" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 4 beds · 2 baths &middot; 5.0 (36)</p>
                 <div class="listing-prices">
                     <div class="price-main">$538 <span class="price-label">total (1n)</span></div>
@@ -2354,14 +2423,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="561" data-label="Apartment in Psyri" data-photo="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" data-nights="1" data-perperson="$112" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/d4cce980-f3d1-43b8-95b5-c71c3f7c0564.jpg?im_w=720" alt="Apartment in Psyri" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 10</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/28634342" target="_blank">Apartment in Psyri</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/28634342" target="_blank" onclick="event.stopPropagation()">Apartment in Psyri</a></h4>
                 <p class="listing-details">10 guests · 4 bedrooms &middot; 4.97 (74)</p>
                 <div class="listing-prices">
                     <div class="price-main">$561 <span class="price-label">total (1n)</span></div>
@@ -2369,14 +2438,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="574" data-label="Condo in Athens" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" data-nights="1" data-perperson="$114" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-50132018/original/c4f844b4-dc35-4153-8699-cb54e6c4a88d.jpeg?im_w=720" alt="Condo in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/50132018" target="_blank">Condo in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/50132018" target="_blank" onclick="event.stopPropagation()">Condo in Athens</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.89 (498)</p>
                 <div class="listing-prices">
                     <div class="price-main">$574 <span class="price-label">total (1n)</span></div>
@@ -2384,14 +2453,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="627" data-label="Condo in Exarcheia" data-photo="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" data-nights="1" data-perperson="$125" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-3036157/original/545f62d3-6209-4087-b409-eda15e47a641.jpeg?im_w=720" alt="Condo in Exarcheia" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/3036157" target="_blank">Condo in Exarcheia</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/3036157" target="_blank" onclick="event.stopPropagation()">Condo in Exarcheia</a></h4>
                 <p class="listing-details">5 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.99 (165)</p>
                 <div class="listing-prices">
                     <div class="price-main">$627 <span class="price-label">total (1n)</span></div>
@@ -2399,14 +2468,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="642" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" data-nights="1" data-perperson="$128" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/3d80face-064c-446c-bdd8-5d3ffd4d9fd3.jpg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 7</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/23427054" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/23427054" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">7 guests · 3 bedrooms · 5 beds · 2 baths &middot; 4.92 (270)</p>
                 <div class="listing-prices">
                     <div class="price-main">$642 <span class="price-label">total (1n)</span></div>
@@ -2414,14 +2483,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="694" data-label="Condo in Plaka" data-photo="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" data-nights="1" data-perperson="$138" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/61db8919-de62-475b-a2a5-26f46d61cb38.jpg?im_w=720" alt="Condo in Plaka" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 5</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/920813668180190104" target="_blank">Condo in Plaka</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/920813668180190104" target="_blank" onclick="event.stopPropagation()">Condo in Plaka</a></h4>
                 <p class="listing-details">5 guests · 2 bedrooms · 4 beds · 1 bath &middot; 4.97 (113)</p>
                 <div class="listing-prices">
                     <div class="price-main">$694 <span class="price-label">total (1n)</span></div>
@@ -2429,14 +2498,14 @@ a:hover { text-decoration: underline; }
                 </div>
             </div>
         </div>
-        <div class="listing-card">
+        <div class="listing-card selectable" data-category="athens" data-total="712" data-label="Apartment in Athens" data-photo="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" data-nights="1" data-perperson="$142" onclick="selectItem(this, 'athens')">
             <div class="listing-photo"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6OTQ5MTEyODc4Mjk0NDE3NjA2/original/ced8ec95-7319-4b3a-a33d-a8a83a2c9321.jpeg?im_w=720" alt="Apartment in Athens" loading="lazy"></div>
             <div class="listing-info">
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px">
                     <span class="tier-badge" style="background:#a855f7">Luxury</span>
                     <span class="guest-badge">Sleeps 6</span>
                 </div>
-                <h4><a href="https://www.airbnb.com/rooms/949112878294417606" target="_blank">Apartment in Athens</a></h4>
+                <h4><a href="https://www.airbnb.com/rooms/949112878294417606" target="_blank" onclick="event.stopPropagation()">Apartment in Athens</a></h4>
                 <p class="listing-details">6 guests · 3 bedrooms · 3 beds · 2 baths &middot; 4.88 (117)</p>
                 <div class="listing-prices">
                     <div class="price-main">$712 <span class="price-label">total (1n)</span></div>
@@ -2447,7 +2516,7 @@ a:hover { text-decoration: underline; }
     </div>
 </div>
 
-<div class="section">
+<div class="section" id="sec-cost">
     <div class="section-header"><h2>Cost Summary</h2></div>
     <h3 style="margin-bottom:15px">Option A: 7-Day Trip (Jul 14-21)</h3>
     <p style="margin-bottom:10px; color:#6b7280">Milos (3n) &rarr; Mykonos (3n) &rarr; Athens (1n)</p>
@@ -2490,11 +2559,162 @@ a:hover { text-decoration: underline; }
     </div>
 </div>
 
+<!-- YOUR SELECTIONS - appears at bottom when you click items -->
+<div class="summary-panel" id="summaryPanel" style="scroll-margin-top:20px">
+    <h3>Your Selections</h3>
+    <div class="summary-cards" id="summaryCards"></div>
+    <div class="summary-totals" id="summaryTotals"></div>
+</div>
+
 <p style="text-align:center; color:#9ca3af; padding: 40px 0; font-size:0.8em">
     Prices scraped Apr 1, 2026. Flights: Google Flights. Airbnbs: airbnb.com (5 guests, entire homes). Hotels: Tablet Hotels.<br>
     Airbnb totals include all fees. Hotel totals include taxes.
 </p>
 
 </div>
+
+<!-- Floating cost bar -->
+<div class="cost-bar" id="costBar">
+    <div class="cost-bar-inner">
+        <div class="cost-bar-selections" id="costSelections">
+            <span style="color:#9ca3af; font-size:0.85em">Click flights &amp; lodging to build your trip cost</span>
+        </div>
+        <div class="cost-bar-total">
+            <div class="total-label">Group total (5 ppl)</div>
+            <div class="total-amount" id="costTotal">$0</div>
+            <div class="total-pp" id="costPP">$0/person</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const selections = {};
+const categoryOrder = ['flight', 'milos', 'paros', 'mykonos', 'athens'];
+const categoryNames = { flight: 'Flight', milos: 'Milos', paros: 'Paros', mykonos: 'Mykonos', athens: 'Athens' };
+
+function selectItem(el, category) {
+    if (selections[category]) selections[category].element.classList.remove('selected');
+    if (selections[category] && selections[category].element === el) {
+        delete selections[category];
+    } else {
+        el.classList.add('selected');
+        selections[category] = {
+            total: parseInt(el.dataset.total) || 0,
+            label: el.dataset.label || category,
+            element: el,
+            photo: el.dataset.photo || '',
+            nights: el.dataset.nights || '',
+            perperson: el.dataset.perperson || ''
+        };
+    }
+    updateCostBar();
+    updateSummaryPanel();
+}
+
+function removeSelection(category) {
+    if (selections[category]) {
+        selections[category].element.classList.remove('selected');
+        delete selections[category];
+    }
+    updateCostBar();
+    updateSummaryPanel();
+}
+
+function updateSummaryPanel() {
+    var panel = document.getElementById('summaryPanel');
+    var cardsDiv = document.getElementById('summaryCards');
+    var totalsDiv = document.getElementById('summaryTotals');
+    var keys = categoryOrder.filter(function(k) { return selections[k]; });
+    if (keys.length === 0) { panel.classList.remove('visible'); return; }
+    panel.classList.add('visible');
+    var cardsHtml = '';
+    var grandTotal = 0;
+    keys.forEach(function(key) {
+        var s = selections[key];
+        var catName = categoryNames[key] || key;
+        var ppCost = key === 'flight' ? s.total : Math.round(s.total / 5);
+        grandTotal += ppCost;
+        if (key === 'flight') {
+            cardsHtml += '<div class="summary-card flight-card"><div class="sc-icon">&#9992;</div><div class="sc-body"><div class="sc-cat">' + catName + '</div><div class="sc-name">' + s.label + '</div><div class="sc-price">$' + s.total.toLocaleString() + '</div><div class="sc-sub">per person</div></div></div>';
+        } else {
+            var imgHtml = s.photo ? '<img src="' + s.photo + '" loading="lazy">' : '<div style="height:100px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:0.8em">No photo</div>';
+            var nightsLabel = s.nights ? s.nights + 'n' : '';
+            cardsHtml += '<div class="summary-card">' + imgHtml + '<div class="sc-body"><div class="sc-cat">' + catName + (nightsLabel ? ' &middot; ' + nightsLabel : '') + '</div><div class="sc-name">' + s.label + '</div><div class="sc-price">$' + ppCost.toLocaleString() + '/pp</div><div class="sc-sub">$' + s.total.toLocaleString() + ' group</div></div></div>';
+        }
+    });
+    var hasParos = !!selections.paros;
+    var ferries = hasParos ? 235 : 219;
+    grandTotal += ferries;
+    cardsHtml += '<div class="summary-card flight-card"><div class="sc-icon">&#9875;</div><div class="sc-body"><div class="sc-cat">Ferries</div><div class="sc-name">All legs</div><div class="sc-price">~$' + ferries + '</div><div class="sc-sub">per person est.</div></div></div>';
+    cardsDiv.innerHTML = cardsHtml;
+    totalsDiv.innerHTML = '<div class="st-item"><div class="st-label">Per Person</div><div class="st-pp">$' + grandTotal.toLocaleString() + '</div></div><div class="st-item"><div class="st-label">Group of 5</div><div class="st-value">$' + (grandTotal * 5).toLocaleString() + '</div></div>';
+}
+
+function updateCostBar() {
+    var bar = document.getElementById('costBar');
+    var selectionsDiv = document.getElementById('costSelections');
+    var totalDiv = document.getElementById('costTotal');
+    var ppDiv = document.getElementById('costPP');
+    var keys = categoryOrder.filter(function(k) { return selections[k]; });
+    if (keys.length === 0) {
+        bar.classList.remove('visible');
+        document.body.classList.remove('has-cost-bar');
+        return;
+    }
+    bar.classList.add('visible');
+    document.body.classList.add('has-cost-bar');
+    var chipsHtml = '';
+    var grandTotal = 0;
+    keys.forEach(function(key) {
+        var s = selections[key];
+        var catName = categoryNames[key] || key;
+        var displayTotal = key === 'flight' ? s.total : Math.round(s.total / 5);
+        grandTotal += displayTotal;
+        chipsHtml += '<span class="cost-bar-chip"><strong>' + catName + ':</strong> $' + displayTotal.toLocaleString() + '</span>';
+    });
+    var hasParos = !!selections.paros;
+    var ferries = hasParos ? 235 : 219;
+    grandTotal += ferries;
+    chipsHtml += '<span class="cost-bar-chip"><strong>Ferries:</strong> ~$' + ferries + '</span>';
+    selectionsDiv.innerHTML = chipsHtml;
+    totalDiv.textContent = '$' + (grandTotal * 5).toLocaleString();
+    ppDiv.textContent = '$' + grandTotal.toLocaleString() + '/person';
+}
+
+// Show/hide "Your Picks" nav link
+function updateNavSelections() {
+    var link = document.getElementById('navSelections');
+    var hasSelections = categoryOrder.some(function(k) { return selections[k]; });
+    link.style.display = hasSelections ? 'block' : 'none';
+}
+
+// Highlight active section in sidebar on scroll
+var sections = ['sec-flights', 'sec-milos', 'sec-paros', 'sec-mykonos', 'sec-athens', 'sec-cost'];
+window.addEventListener('scroll', function() {
+    var scrollY = window.scrollY + 200;
+    var active = '';
+    sections.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) active = id;
+    });
+    document.querySelectorAll('.sidebar-nav a').forEach(function(a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('.sidebar-nav a').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// Patch updateSummaryPanel to also update nav
+var _origUpdateSummary = updateSummaryPanel;
+updateSummaryPanel = function() { _origUpdateSummary(); updateNavSelections(); };
+</script>
+
 </body>
 </html>
