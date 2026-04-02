@@ -530,12 +530,126 @@ body.has-cost-bar { padding-bottom: 80px; }
             })
         }).addTo(map_island0).bindPopup('<b>Villa in Milos</b><br>$7,364'));
 
+        markers_island0.push(L.marker([36.7635, 24.5275], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Captain Zeppos</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Captain Zeppos</b><br>$TBD'));
+
+        markers_island0.push(L.marker([36.7622, 24.5222], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Milos Breeze</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Milos Breeze</b><br>$2,089'));
+
+        markers_island0.push(L.marker([36.7663, 24.5222], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Salt Suites</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Salt Suites</b><br>$1,403'));
+
+        markers_island0.push(L.marker([36.7677, 24.5263], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Villa Costa Mare</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Villa Costa Mare</b><br>$TBD'));
+
+        markers_island0.push(L.marker([36.7385, 24.4288], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Windmill Marketos</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island0).bindPopup('<b>Windmill Marketos</b><br>$TBD'));
+
         if (markers_island0.length > 0) {
-            var bounds_island0 = L.latLngBounds([[36.787800000000004, 24.5716], [36.7269, 24.4295], [36.747800000000005, 24.4493], [36.7158, 24.4516], [36.7325, 24.411], [36.6953, 24.4162], [36.7254, 24.4432], [36.7179, 24.4331], [37.9804, 23.7189], [36.7191, 24.4498], [36.7269, 24.4295], [36.7074, 24.44], [36.7254, 24.4432], [36.7191, 24.4498], [36.7191, 24.4498], [36.6926, 24.3886], [36.7207, 24.4133], [36.7269, 24.4295], [36.7269, 24.4295], [36.6986, 24.4556], [36.7254, 24.4432], [36.7158, 24.4516], [36.746900000000004, 24.426399999999997], [36.7263, 24.4343]]);
+            var bounds_island0 = L.latLngBounds([[36.787800000000004, 24.5716], [36.7269, 24.4295], [36.747800000000005, 24.4493], [36.7158, 24.4516], [36.7325, 24.411], [36.6953, 24.4162], [36.7254, 24.4432], [36.7179, 24.4331], [37.9804, 23.7189], [36.7191, 24.4498], [36.7269, 24.4295], [36.7074, 24.44], [36.7254, 24.4432], [36.7191, 24.4498], [36.7191, 24.4498], [36.6926, 24.3886], [36.7207, 24.4133], [36.7269, 24.4295], [36.7269, 24.4295], [36.6986, 24.4556], [36.7254, 24.4432], [36.7158, 24.4516], [36.746900000000004, 24.426399999999997], [36.7263, 24.4343], [36.7635, 24.5275], [36.7622, 24.5222], [36.7663, 24.5222], [36.7677, 24.5263], [36.7385, 24.4288]]);
             map_island0.fitBounds(bounds_island0.pad(0.15));
         }
     </script>
     <a class="search-link" href="https://www.airbnb.com/s/Milos%2C%20Greece/homes?query=Milos%2C%20Greece&amp;checkin=2026-07-11&amp;checkout=2026-07-14&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <h3 style="margin:25px 0 15px">Hotels from Places (curated $$$)</h3>
+
+    <div class="hotel-card selectable" data-category="milos" data-total="2089" data-label="Milos Breeze Boutique Hotel" data-photo="https://www.milosbreeze.gr/opengraph.png" data-nights="3" data-perperson="$417" onclick="selectItem(this, 'milos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-milos-breeze" data-fav-cat="milos" data-fav-label="Milos Breeze Boutique Hotel" data-fav-price="$2,089 total" data-fav-photo="https://www.milosbreeze.gr/opengraph.png" data-fav-url="https://milosbreeze.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://www.milosbreeze.gr/opengraph.png" alt="Milos Breeze Boutique Hotel" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Milos Breeze Boutique Hotel <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Pollonia (fishing village) &middot; <a href="http://www.milosbreeze.gr/en" target="_blank">Website</a> &middot; <a href="https://milosbreeze.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">N/A (contact hotel)</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$2,088.85/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$2,089</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$139</strong>/person/night &middot; $417/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card selectable" data-category="milos" data-total="1403" data-label="Salt Suites" data-photo="https://cdn.webhotelier.net/photos/w=1920/saltsuites/L517423.jpg" data-nights="3" data-perperson="$282" onclick="selectItem(this, 'milos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-salt-suites" data-fav-cat="milos" data-fav-label="Salt Suites" data-fav-price="$1,403 total" data-fav-photo="https://cdn.webhotelier.net/photos/w=1920/saltsuites/L517423.jpg" data-fav-url="https://hotelbrain.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://cdn.webhotelier.net/photos/w=1920/saltsuites/L517423.jpg" alt="Salt Suites" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Salt Suites <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Pollonia &middot; <a href="https://www.hotelbrain.com/hotels-in-milos/salt-suites-milos" target="_blank">Website</a> &middot; <a href="https://hotelbrain.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">$396.95/3n</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$1,006.52/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$1,403</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$94</strong>/person/night &middot; $282/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card selectable" data-category="milos" data-total="962" data-label="Yria Island Boutique Hotel & Spa" data-photo="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" data-nights="3" data-perperson="$192" onclick="selectItem(this, 'milos')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-yria-hotel" data-fav-cat="milos" data-fav-label="Yria Island Boutique Hotel & Spa" data-fav-price="$962 total" data-fav-photo="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" data-fav-url="https://yriahotel.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" alt="Yria Island Boutique Hotel & Spa" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Yria Island Boutique Hotel & Spa <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Parasporos area &middot; <a href="https://www.yriahotel.gr/" target="_blank">Website</a> &middot; <a href="https://yriahotel.reserve-online.net/?checkin=2026-07-11&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">$512.35/3n</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$450.03/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$962</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$64</strong>/person/night &middot; $192/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card">
+        
+        <div class="hotel-body">
+        <h4>Captain Zeppos Boutique Suites <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Pollonia &middot; <a href="http://www.captainzeppos.com/" target="_blank">Website</a> &middot; Check website for pricing</p>
+        </div>
+    </div>
+
+    <div class="hotel-card">
+        <div class="hotel-photo"><img src="http://marketoswindmill.gr/wp-content/uploads/2014/09/MMM-800px-HouseW_028_131011_7563.jpg" alt="Windmill Marketos" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Windmill Marketos <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Plaka area &middot; <a href="http://marketoswindmill.gr/" target="_blank">Website</a> &middot; Check website for pricing</p>
+        </div>
+    </div>
+
     <div class="listings-grid">
         
         <div class="listing-card selectable" data-category="milos" data-total="473" data-label="Home in Kimolos" data-photo="https://a0.muscache.com/im/pictures/a3a06ab3-f467-46ed-a343-27dc412478de.jpg?im_w=720" data-nights="3" data-perperson="$31" data-url="https://www.airbnb.com/rooms/3474759" onclick="selectItem(this, 'milos')">
@@ -1136,12 +1250,143 @@ body.has-cost-bar { padding-bottom: 80px; }
             })
         }).addTo(map_island1).bindPopup('<b>Villa in Naousa</b><br>$4,572'));
 
+        markers_island1.push(L.marker([37.1253, 25.2044], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Acron Villas</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Acron Villas</b><br>$4,722'));
+
+        markers_island1.push(L.marker([37.1241, 25.2434], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">NAUMA Paros</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>NAUMA Paros</b><br>$4,421'));
+
+        markers_island1.push(L.marker([37.1204, 25.2134], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Parilio</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Parilio</b><br>$4,030+'));
+
+        markers_island1.push(L.marker([37.0698, 25.13], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Yria Hotel & Spa</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Yria Hotel & Spa</b><br>$962'));
+
+        markers_island1.push(L.marker([37.042, 25.1082], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">SeeSoo Paros</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>SeeSoo Paros</b><br>$TBD'));
+
+        markers_island1.push(L.marker([37.139, 25.2864], {
+            icon: L.divIcon({
+                className: 'price-pin',
+                html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Seven Santa Maria</div>',
+                iconSize: null,
+                iconAnchor: [40, 15]
+            })
+        }).addTo(map_island1).bindPopup('<b>Seven Santa Maria</b><br>$TBD'));
+
         if (markers_island1.length > 0) {
-            var bounds_island1 = L.latLngBounds([[37.0766, 25.162], [37.0766, 25.162], [37.0874, 25.1552], [37.089800000000004, 25.1374], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.0766, 25.162], [37.089800000000004, 25.1374], [37.1089, 25.2347], [37.067699999999995, 25.1873], [37.113099999999996, 25.2482], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.0925, 25.151799999999998], [37.1089, 25.2347], [37.132, 25.2215], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.1308, 25.247]]);
+            var bounds_island1 = L.latLngBounds([[37.0766, 25.162], [37.0766, 25.162], [37.0874, 25.1552], [37.089800000000004, 25.1374], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.0766, 25.162], [37.089800000000004, 25.1374], [37.1089, 25.2347], [37.067699999999995, 25.1873], [37.113099999999996, 25.2482], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.0925, 25.151799999999998], [37.1089, 25.2347], [37.132, 25.2215], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.0841, 25.149099999999997], [37.1089, 25.2347], [37.113099999999996, 25.2482], [37.1308, 25.247], [37.1253, 25.2044], [37.1241, 25.2434], [37.1204, 25.2134], [37.0698, 25.13], [37.042, 25.1082], [37.139, 25.2864]]);
             map_island1.fitBounds(bounds_island1.pad(0.15));
         }
     </script>
     <a class="search-link" href="https://www.airbnb.com/s/Paros%2C%20Greece/homes?query=Paros%2C%20Greece&amp;checkin=2026-07-14&amp;checkout=2026-07-17&amp;adults=5&amp;room_types%5B%5D=Entire%20home%2Fapt&amp;price_filter_num_nights=1" target="_blank">View all on Airbnb &rarr;</a>
+    <h3 style="margin:25px 0 15px">Hotels from Places (curated $$$)</h3>
+
+    <div class="hotel-card selectable" data-category="paros" data-total="962" data-label="Yria Island Boutique Hotel & Spa" data-photo="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" data-nights="3" data-perperson="$192" onclick="selectItem(this, 'paros')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-yria-hotel" data-fav-cat="paros" data-fav-label="Yria Island Boutique Hotel & Spa" data-fav-price="$962 total" data-fav-photo="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" data-fav-url="https://yriahotel.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://www.yriahotel.gr/wp-content/uploads/2022/06/Yria-Boutique-Hotel-Spa-Paros-115.jpg" alt="Yria Island Boutique Hotel & Spa" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Yria Island Boutique Hotel & Spa <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">South coast, near Parikia &middot; <a href="https://www.yriahotel.gr/" target="_blank">Website</a> &middot; <a href="https://yriahotel.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">$512.35/3n</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$450.03/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$962</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$64</strong>/person/night &middot; $192/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card selectable" data-category="paros" data-total="4421" data-label="NAUMA Paros" data-photo="https://lifethink.eu/naumahotel/wp-content/uploads/2025/04/fb.jpg" data-nights="3" data-perperson="$885" onclick="selectItem(this, 'paros')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-nauma-paros" data-fav-cat="paros" data-fav-label="NAUMA Paros" data-fav-price="$4,421 total" data-fav-photo="https://lifethink.eu/naumahotel/wp-content/uploads/2025/04/fb.jpg" data-fav-url="https://naumaparos.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://lifethink.eu/naumahotel/wp-content/uploads/2025/04/fb.jpg" alt="NAUMA Paros" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>NAUMA Paros <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Near Naoussa, adults-only &middot; <a href="https://www.naumahotel.com/" target="_blank">Website</a> &middot; <a href="https://naumaparos.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">$2,392.10/3n</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$2,028.61/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$4,421</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$295</strong>/person/night &middot; $885/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card selectable" data-category="paros" data-total="4722" data-label="Acron Villas Paros" data-photo="https://pariliohotelparos.com/wp-content/themes/acronvillas/images/fb.jpg" data-nights="3" data-perperson="$945" onclick="selectItem(this, 'paros')">
+        <button class="heart-btn" onclick="event.stopPropagation(); toggleHeart(this)" data-fav-id="hotel-acron-villas" data-fav-cat="paros" data-fav-label="Acron Villas Paros" data-fav-price="$4,722 total" data-fav-photo="https://pariliohotelparos.com/wp-content/themes/acronvillas/images/fb.jpg" data-fav-url="https://acronvillasparos.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD"></button>
+        <div class="hotel-photo"><img src="https://pariliohotelparos.com/wp-content/themes/acronvillas/images/fb.jpg" alt="Acron Villas Paros" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Acron Villas Paros <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Hillside above Kolympithres &middot; <a href="https://acronvillasparos.com/" target="_blank">Website</a> &middot; <a href="https://acronvillasparos.reserve-online.net/?checkin=2026-07-14&rooms=1&nights=3&adults=2&currency=USD" target="_blank">Book direct</a></p>
+        <div class="hotel-rooms">
+            <div class="hotel-room"><div class="room-name">Room for 3</div><div class="room-price">$2,360.95/3n</div></div>
+            <div class="hotel-room"><div class="room-name">Room for 2</div><div class="room-price">$2,360.95/3n</div></div>
+        </div>
+        <div class="hotel-total">
+            <div><span class="total-price">$4,722</span> <span style="color:#6b7280">2 rooms &middot; 3 nights &middot; incl. taxes</span></div>
+            <div class="per-person"><strong>$315</strong>/person/night &middot; $945/person total</div>
+        </div>
+        </div>
+    </div>
+
+    <div class="hotel-card">
+        <div class="hotel-photo"><img src="https://pariliohotelparos.com/wp-content/themes/parilio/images/fb.jpg" alt="Parilio" loading="lazy"></div>
+        <div class="hotel-body">
+        <h4>Parilio <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Kolympithres, near Naoussa · 19.4/20 on Tablet &middot; <a href="https://pariliohotelparos.com/" target="_blank">Website</a> &middot; Check website for pricing</p>
+        </div>
+    </div>
+
+    <div class="hotel-card">
+        
+        <div class="hotel-body">
+        <h4>SeeSoo Paros <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">South coast, resort &middot; <a href="https://seesooparos.com/" target="_blank">Website</a> &middot; Check website for pricing</p>
+        </div>
+    </div>
+
+    <div class="hotel-card">
+        
+        <div class="hotel-body">
+        <h4>Seven Santa Maria <span style="background:#6366f1;color:white;padding:2px 8px;border-radius:8px;font-size:0.6em;vertical-align:middle">PLACES</span></h4>
+        <p class="location">Santa Maria Beach, northeast &middot; <a href="http://www.sevensantamaria.com/" target="_blank">Website</a> &middot; Check website for pricing</p>
+        </div>
+    </div>
+
     <div class="listings-grid">
         
         <div class="listing-card selectable" data-category="paros" data-total="527" data-label="Apartment in Paros" data-photo="https://a0.muscache.com/im/pictures/d36e9b9b-da51-413a-9a47-e0a04ec56e0f.jpg?im_w=720" data-nights="3" data-perperson="$35" data-url="https://www.airbnb.com/rooms/37736418" onclick="selectItem(this, 'paros')">
@@ -1706,41 +1951,41 @@ body.has-cost-bar { padding-bottom: 80px; }
             })
         }).addTo(map_island2).bindPopup('<b>Apartment in Mykonos</b><br>$2,686'));
 
-        markers_island2.push(L.marker([37.435, 25.403], {
+        markers_island2.push(L.marker([37.4389, 25.416], {
             icon: L.divIcon({
                 className: 'price-pin',
                 html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">NUMO Mykonos</div>',
                 iconSize: null,
                 iconAnchor: [40, 15]
             })
-        }).addTo(map_island2).bindPopup('<b>NUMO Mykonos</b><br>$1,729 total'));
+        }).addTo(map_island2).bindPopup('<b>NUMO Mykonos</b><br>$1,729'));
 
-        markers_island2.push(L.marker([37.46, 25.39], {
+        markers_island2.push(L.marker([37.4314, 25.4033], {
             icon: L.divIcon({
                 className: 'price-pin',
                 html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Pietra e Mare</div>',
                 iconSize: null,
                 iconAnchor: [40, 15]
             })
-        }).addTo(map_island2).bindPopup('<b>Pietra e Mare</b><br>$2,284 total'));
+        }).addTo(map_island2).bindPopup('<b>Pietra e Mare</b><br>$2,284'));
 
-        markers_island2.push(L.marker([37.435, 25.31], {
+        markers_island2.push(L.marker([37.4349, 25.3133], {
             icon: L.divIcon({
                 className: 'price-pin',
                 html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">Mykonos No5</div>',
                 iconSize: null,
                 iconAnchor: [40, 15]
             })
-        }).addTo(map_island2).bindPopup('<b>Mykonos No5</b><br>$2,241 total'));
+        }).addTo(map_island2).bindPopup('<b>Mykonos No5</b><br>$2,305'));
 
-        markers_island2.push(L.marker([37.45, 25.325], {
+        markers_island2.push(L.marker([37.4531, 25.3408], {
             icon: L.divIcon({
                 className: 'price-pin',
                 html: '<div style="background:#dc2626;color:white;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);border:2px solid white">A Hotel Mykonos</div>',
                 iconSize: null,
                 iconAnchor: [40, 15]
             })
-        }).addTo(map_island2).bindPopup('<b>A Hotel Mykonos</b><br>$1,004 total'));
+        }).addTo(map_island2).bindPopup('<b>A Hotel Mykonos</b><br>$2,146'));
 
         markers_island2.push(L.marker([37.4374, 25.3333], {
             icon: L.divIcon({
@@ -1815,7 +2060,7 @@ body.has-cost-bar { padding-bottom: 80px; }
         }).addTo(map_island2).bindPopup('<b>Myconian Kyma</b><br>$3,282'));
 
         if (markers_island2.length > 0) {
-            var bounds_island2 = L.latLngBounds([[37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.432300000000005, 25.3215], [37.4452, 25.323900000000002], [37.404199999999996, 25.3585], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4095, 25.348899999999997], [37.4311, 25.3249], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4194, 25.336599999999997], [37.4407, 25.3362], [37.435, 25.403], [37.46, 25.39], [37.435, 25.31], [37.45, 25.325], [37.4374, 25.3333], [37.4178, 25.3382], [37.427, 25.3864], [37.4433, 25.4009], [37.4315, 25.4025], [37.4329, 25.4119], [37.4372, 25.3292], [37.4373, 25.3298]]);
+            var bounds_island2 = L.latLngBounds([[37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4452, 25.323900000000002], [37.432300000000005, 25.3215], [37.4452, 25.323900000000002], [37.404199999999996, 25.3585], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4095, 25.348899999999997], [37.4311, 25.3249], [37.4452, 25.323900000000002], [37.4407, 25.3362], [37.4194, 25.336599999999997], [37.4407, 25.3362], [37.4389, 25.416], [37.4314, 25.4033], [37.4349, 25.3133], [37.4531, 25.3408], [37.4374, 25.3333], [37.4178, 25.3382], [37.427, 25.3864], [37.4433, 25.4009], [37.4315, 25.4025], [37.4329, 25.4119], [37.4372, 25.3292], [37.4373, 25.3298]]);
             map_island2.fitBounds(bounds_island2.pad(0.15));
         }
     </script>
